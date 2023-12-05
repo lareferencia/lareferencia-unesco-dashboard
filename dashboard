@@ -42,7 +42,7 @@ def update_table(selected_columns):
         # Si no se ha seleccionado ninguna columna, muestra todas las filas
         return df[columns_to_display].to_dict('records')
 
-    filtered_df = df[df[selected_columns[0]] == selected_columns[0]]  # Filtra por el primer valor seleccionado
+    filtered_df = df[df[selected_columns[0]] == selected_columns[0]] 
 
     if len(selected_columns) > 1:
         for column in selected_columns[1:]:
