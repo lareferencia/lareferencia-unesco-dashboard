@@ -18,8 +18,8 @@ app.layout = html.Div([
     dcc.Dropdown(
         id='column-dropdown',
         options=[{'label': col, 'value': col} for col in columns_for_dropdown],
-        value=columns_for_dropdown[0],  # Establece el valor predeterminado a la primera columna
-        clearable=True,  # Permite eliminar la opción seleccionada con la x
+        value=columns_for_dropdown[0], 
+        clearable=True,  
     ),
 
     dash_table.DataTable(
