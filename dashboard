@@ -1,24 +1,17 @@
-# Importa las bibliotecas necesarias
 from dash import Dash, dcc, html, Input, Output, dash_table
 import pandas as pd
 
-# Descarga el archivo CSV desde la URL
 url = 'https://raw.githubusercontent.com/Keynell272/Prueba/main/Modelo%20coma.csv'
 df = pd.read_csv(url, delimiter=',')
 
-# Lista de columnas que se deben excluir del Dropdown
 excluded_columns = ['Pais', 'Nombre de la iniciativa', 'Descripción', 'Sitio web', 'Correo contacto']
 
-# Filtra las columnas para el Dropdown
 columns_for_dropdown = [col for col in df.columns if col not in excluded_columns]
 
-# Limita la tabla a mostrar solo las primeras 5 columnas
 columns_to_display = df.columns[:5]
 
-# Crea una aplicación Dash
 app = Dash(__name__)
 
-# Define el diseño de la página
 app.layout = html.Div([
     html.H1(children='Tabla de Datos', style={'textAlign': 'center'}),
 
@@ -39,7 +32,6 @@ app.layout = html.Div([
     )
 ])
 
-# Actualiza la tabla en función de la columna seleccionada
 @app.callback(
     [Output('data-table', 'data'),
      Output('column-dropdown', 'options')],
@@ -52,13 +44,11 @@ def update_table(selected_columns):
 
     filtered_df = df[df[selected_columns[0]] == selected_columns[0]]  # Filtra por el primer valor seleccionado
 
-    # Si hay más de un valor seleccionado, filtra por cada uno de ellos
     if len(selected_columns) > 1:
         for column in selected_columns[1:]:
             filtered_df = filtered_df[filtered_df[column] == 'value']
 
     return filtered_df[columns_to_display].to_dict('records')
 
-# Ejecuta la aplicación si el archivo se ejecuta directamente
 if __name__ == '__main__':
     app.run_server(debug=True)
