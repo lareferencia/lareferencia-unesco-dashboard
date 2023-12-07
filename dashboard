@@ -31,6 +31,7 @@ app.layout = html.Div([
         dcc.Dropdown(
         id='column-dropdown',
         options=[{'label': col, 'value': col} for col in categories_dropdown],
+        placeholder='Seleccione categoría ... ',
         clearable=True,
         style={'width': '100%'}  
     ),
@@ -38,6 +39,7 @@ app.layout = html.Div([
     dcc.Dropdown(
         id='subcategory-dropdown',
         options=[{'label': subcategory, 'value': subcategory} for subcategory in subcategory_options],
+        placeholder='Seleccione sub-categoría ... ',
         clearable=True,  
         style={'width': '100%'}  
     )], 
