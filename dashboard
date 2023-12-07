@@ -60,15 +60,28 @@ app.layout = html.Div([
 @app.callback(
     [Output('data-table', 'data'),
      Output('subcategory-dropdown', 'options')],
-    Input('column-dropdown', 'value')
+    [Input('column-dropdown', 'value'),
+     Input('subcategory-dropdown', 'value')]
 )
-def update_table(selected_category):
+def update_table(selected_category, selected_subcategory):
+    print('selected subcategory : ', selected_subcategory)
     if not selected_category or selected_category == None:
         # Si no se ha seleccionado ninguna columna o se selecciona Todas, muestra todas las filas
         return data_frame[excluded_columns].to_dict('records'),['empty']
 
-    filtered_df = data_frame[data_frame[selected_category] == selected_category]
-    print('filtered_df : \n', filtered_df)
+#filter the data with the values selected in the dropdowns
+    #check if the subcategory is diferent from None
+    if selected_subcategory != None:
+        filtered_df = data_frame[
+            (data_frame[selected_category] == selected_category) &
+            (data_frame[selected_subcategory] == selected_subcategory)
+            ]
+        print('filtered_df with sub: \n', filtered_df)
+    else:
+        filtered_df = data_frame[
+            (data_frame[selected_category] == selected_category)
+            ]
+        print('filtered_df : \n', filtered_df)
 
     # Obtiene las subcategorías de la columna seleccionada
     subcategory_options = get_subcategory_options(selected_category)
@@ -76,7 +89,6 @@ def update_table(selected_category):
     return filtered_df[excluded_columns].to_dict('records'),subcategory_options
 
 def get_subcategory_options(selected_category):
-    print('selected_category : ', selected_category)
     match selected_category:
         case '1-Conocimiento científico abierto':
             return ['Producción científica', 'Datos abiertos de investigación', 'Recursos Educativos Abiertos',
