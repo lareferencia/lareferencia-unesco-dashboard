@@ -1,31 +1,56 @@
 from dash import Dash, dcc, html, Input, Output, dash_table
 import pandas as pd
 
+#address where the csv is located
 url = 'https://raw.githubusercontent.com/Keynell272/Prueba/main/Modelo%20coma.csv'
-df = pd.read_csv(url, delimiter=',')
 
+#create a data frame with the csv
+data_frame = pd.read_csv(url, delimiter=',')
+
+#columns to display in the table
 excluded_columns = ['Pais', 'Nombre de la iniciativa', 'Descripción', 'Sitio web', 'Correo contacto']
 
-columns_for_dropdown = [col for col in df.columns if col not in excluded_columns]
+#rest of columns (will be displayed in different dopdowns depending on the column value)
+rest_columns = data_frame.columns[5:]
 
-columns_to_display = df.columns[:5]
+categories_dropdown = rest_columns[rest_columns.str.match(r'\d+')]
+#add option 'Todas' to the dropdown
+#categories_dropdown = ['Todas'] + categories_dropdown.tolist()
+
+
+#dropdown options for subcategory
+subcategory_options = ['empty']
+
 
 app = Dash(__name__)
 
 app.layout = html.Div([
     html.H1(children='Tabla de Datos', style={'textAlign': 'center'}),
 
-    dcc.Dropdown(
+    html.Div([    
+        dcc.Dropdown(
         id='column-dropdown',
-        options=[{'label': col, 'value': col} for col in columns_for_dropdown],
-        value=columns_for_dropdown[0], 
-        clearable=True,  
+        options=[{'label': col, 'value': col} for col in categories_dropdown],
+        value=categories_dropdown[0], 
+        clearable=True,
+        style={'width': '100%'}  
     ),
+
+    dcc.Dropdown(
+        id='subcategory-dropdown',
+        options=[{'label': subcategory, 'value': subcategory} for subcategory in subcategory_options],
+        value=subcategory_options[0],  
+        clearable=True,  
+        style={'width': '100%'}  
+    )], 
+    style={'textAlign': 'center', 'background-color': 'lightgrey', 'display':'flex', 'justify-content':'center'}),
+
+
 
     dash_table.DataTable(
         id='data-table',
-        data=df[columns_to_display].to_dict('records'),
-        columns=[{'name': col, 'id': col} for col in columns_to_display],
+        data=data_frame[excluded_columns].to_dict('records'),
+        columns=[{'name': col, 'id': col} for col in excluded_columns],
         style_table={'height': '400px', 'overflowY': 'auto'},
         style_cell={'minWidth': '150px', 'width': '150px', 'maxWidth': '150px'},
         style_header={'fontWeight': 'bold', 'backgroundColor': 'lightgrey'},
@@ -34,21 +59,24 @@ app.layout = html.Div([
 
 @app.callback(
     [Output('data-table', 'data'),
-     Output('column-dropdown', 'options')],
+     Output('subcategory-dropdown', 'options')],
     Input('column-dropdown', 'value')
 )
 def update_table(selected_columns):
-    if not selected_columns:
-        # Si no se ha seleccionado ninguna columna, muestra todas las filas
-        return df[columns_to_display].to_dict('records')
+    if not selected_columns or selected_columns == 'Todas':
+        # Si no se ha seleccionado ninguna columna o se selecciona Todas, muestra todas las filas
+        return data_frame[categories_dropdown].to_dict('records')
 
-    filtered_df = df[df[selected_columns[0]] == selected_columns[0]] 
+    filtered_df = data_frame[data_frame[selected_columns] == selected_columns]
+    print('filtered_df : \n', filtered_df)
 
+    '''
     if len(selected_columns) > 1:
         for column in selected_columns[1:]:
             filtered_df = filtered_df[filtered_df[column] == 'value']
+    '''
 
-    return filtered_df[columns_to_display].to_dict('records')
+    return filtered_df[excluded_columns].to_dict('records'),['A','B','C']
 
 if __name__ == '__main__':
     app.run_server(debug=True)
