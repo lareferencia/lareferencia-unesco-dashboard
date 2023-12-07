@@ -15,7 +15,7 @@ rest_columns = data_frame.columns[5:]
 
 categories_dropdown = rest_columns[rest_columns.str.match(r'\d+')]
 #add option 'Todas' to the dropdown
-#categories_dropdown = ['Todas'] + categories_dropdown.tolist()
+#categories_dropdown =categories_dropdown.tolist() + ['Todas']
 
 
 #dropdown options for subcategory
@@ -31,7 +31,6 @@ app.layout = html.Div([
         dcc.Dropdown(
         id='column-dropdown',
         options=[{'label': col, 'value': col} for col in categories_dropdown],
-        value=categories_dropdown[0], 
         clearable=True,
         style={'width': '100%'}  
     ),
@@ -39,7 +38,6 @@ app.layout = html.Div([
     dcc.Dropdown(
         id='subcategory-dropdown',
         options=[{'label': subcategory, 'value': subcategory} for subcategory in subcategory_options],
-        value=subcategory_options[0],  
         clearable=True,  
         style={'width': '100%'}  
     )], 
@@ -62,21 +60,45 @@ app.layout = html.Div([
      Output('subcategory-dropdown', 'options')],
     Input('column-dropdown', 'value')
 )
-def update_table(selected_columns):
-    if not selected_columns or selected_columns == 'Todas':
+def update_table(selected_category):
+    if not selected_category or selected_category == None:
         # Si no se ha seleccionado ninguna columna o se selecciona Todas, muestra todas las filas
-        return data_frame[categories_dropdown].to_dict('records')
+        return data_frame[excluded_columns].to_dict('records'),['empty']
 
-    filtered_df = data_frame[data_frame[selected_columns] == selected_columns]
+    filtered_df = data_frame[data_frame[selected_category] == selected_category]
     print('filtered_df : \n', filtered_df)
 
-    '''
-    if len(selected_columns) > 1:
-        for column in selected_columns[1:]:
-            filtered_df = filtered_df[filtered_df[column] == 'value']
-    '''
+    # Obtiene las subcategorías de la columna seleccionada
+    subcategory_options = get_subcategory_options(selected_category)
 
-    return filtered_df[excluded_columns].to_dict('records'),['A','B','C']
+    return filtered_df[excluded_columns].to_dict('records'),subcategory_options
+
+def get_subcategory_options(selected_category):
+    print('selected_category : ', selected_category)
+    match selected_category:
+        case '1-Conocimiento científico abierto':
+            return ['Producción científica', 'Datos abiertos de investigación', 'Recursos Educativos Abiertos',
+                     'Programas informáticos de código abierto y código fuente abierto','Equipos informáticos de código abierto']	
+        	
+        case '2-Participación abierta de los agentes sociales ':
+            return ['Ciencia Ciudadana', 'Financiación Colectiva', 'Producción Colectiva','Voluntariado Científico']
+        
+        case '3-Diálogos abiertos con otros sistemas de conocimiento':
+            return ['Pueblos Indígenas', 'Investigadores Marginados', 'Comunidades Locales']
+        		
+        case '4-Infraestructuras de la ciencia abierta':
+            return ['Virtuales', 'Fisicas']
+        	
+        case '5-DIMENSIONES NO UNESCO':
+            return ['Evaluación abierta de la Ciencia', 'Innovación Abierta', 'Investigación abierta y reproducible']
+        		
+        case '6-Cuerpos Normativos':
+            return ['Nacionales', 'Institucionales']
+        	
+        case '7-OBJETIVOS UNESCO':
+            return ['A', 'B', 'C','D','E','F']
+
+    return ['empty']
 
 if __name__ == '__main__':
     app.run_server(debug=True)
