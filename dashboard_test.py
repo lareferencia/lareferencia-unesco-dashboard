@@ -1,5 +1,5 @@
 #pandas
-from pandas import read_csv
+from pandas import read_csv, concat
 
 
 #read csv from this folder
@@ -7,13 +7,42 @@ data_frame = read_csv('Modelo coma.csv', delimiter=',', encoding='utf-8')
 
 #print rows where column '2-Participación abierta de los agentes sociales' is equal to '2-Participación abierta de los agentes sociales'
 
+columns_to_filter = ['6-Cuerpos Normativos', '3-Diálogos abiertos con otros sistemas de conocimiento']
+
+def get_data_by_category(category):
+    filtered_rows = data_frame[
+        (data_frame[category] == category)
+    ]
+    return filtered_rows
 
 
-filtered_rows = data_frame[
+# Initialize a condition to True
+combined_condition = None
+
+#filter data set to an empty data frame
+filtered_rows = None
+
+# Loop through the columns to get the data
+for col in columns_to_filter:
+    current_data = get_data_by_category(col)
+    
+    # Concatenate the current_data with the existing filtered_rows
+    filtered_rows = concat([filtered_rows, current_data])
+
+# Drop duplicates from the concatenated DataFrame
+filtered_rows = filtered_rows.drop_duplicates()
+
+
+# Filter the DataFrame based on the combined condition
+#filtered_rows = data_frame[combined_condition]
+
+print('Array categories filtration : \n',filtered_rows[['Pais','Nombre de la iniciativa']])
+
+""" filtered_rows = data_frame[
     (data_frame['2-Participación abierta de los agentes sociales '] == '2-Participación abierta de los agentes sociales ') &
     (data_frame['Ciencia Ciudadana'] == 'Ciencia Ciudadana')
 ]
-print(filtered_rows)
+print(filtered_rows) """
 
 
 

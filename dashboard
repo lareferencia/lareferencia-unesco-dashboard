@@ -1,11 +1,10 @@
 from dash import Dash, dcc, html, Input, Output, dash_table
-import pandas as pd
 
-#address where the csv is located
-url = 'https://raw.githubusercontent.com/Keynell272/Prueba/main/Modelo%20coma.csv'
+from data import *
+
 
 #create a data frame with the csv
-data_frame = pd.read_csv(url, delimiter=',')
+data_frame = get_all_data()
 
 #columns to display in the table
 excluded_columns = ['Pais', 'Nombre de la iniciativa', 'Descripción', 'Sitio web', 'Correo contacto']
@@ -19,7 +18,7 @@ categories_dropdown = rest_columns[rest_columns.str.match(r'\d+')]
 
 
 #dropdown options for subcategory
-subcategory_options = ['empty']
+subcategory_options = []
 
 
 app = Dash(__name__)
@@ -27,20 +26,30 @@ app = Dash(__name__)
 app.layout = html.Div([
     html.H1(children='Tabla de Datos', style={'textAlign': 'center'}),
 
+        dcc.Checklist(
+        id='additive-switch',
+        options=[
+            {'label': 'Aditivo', 'value': True}
+        ],
+        value=[]
+    ),
+
     html.Div([    
         dcc.Dropdown(
         id='column-dropdown',
         options=[{'label': col, 'value': col} for col in categories_dropdown],
-        placeholder='Seleccione categoría ... ',
+        placeholder='Seleccione una o varias categorías ... ',
         clearable=True,
+        multi=True,
         style={'width': '100%'}  
     ),
 
     dcc.Dropdown(
         id='subcategory-dropdown',
         options=[{'label': subcategory, 'value': subcategory} for subcategory in subcategory_options],
-        placeholder='Seleccione sub-categoría ... ',
+        placeholder='Seleccione una o varias sub-categorías ... ',
         clearable=True,  
+        multi=True,
         style={'width': '100%'}  
     )], 
     style={'textAlign': 'center', 'background-color': 'lightgrey', 'display':'flex', 'justify-content':'center'}),
@@ -61,58 +70,31 @@ app.layout = html.Div([
     [Output('data-table', 'data'),
      Output('subcategory-dropdown', 'options')],
     [Input('column-dropdown', 'value'),
-     Input('subcategory-dropdown', 'value')]
+     Input('subcategory-dropdown', 'value'),
+     Input('additive-switch', 'value')]
 )
-def update_table(selected_category, selected_subcategory):
-    print('selected subcategory : ', selected_subcategory)
-    if not selected_category or selected_category == None:
+def update_table(selected_category, selected_subcategory,additive_switch):
+    #extract value from the checklist
+    if additive_switch:
+        print ('additive_switch : ', additive_switch[0])
+    print('selected categories : ', selected_category)
+    print('selected subcategories : ', selected_subcategory)
+    if not selected_category:
         # Si no se ha seleccionado ninguna columna o se selecciona Todas, muestra todas las filas
-        return data_frame[excluded_columns].to_dict('records'),['empty']
+        return data_frame[excluded_columns].to_dict('records'),[]
 
-#filter the data with the values selected in the dropdowns
-    #check if the subcategory is diferent from None
-    if selected_subcategory != None:
-        filtered_df = data_frame[
-            (data_frame[selected_category] == selected_category) &
-            (data_frame[selected_subcategory] == selected_subcategory)
-            ]
-        print('filtered_df with sub: \n', filtered_df)
-    else:
-        filtered_df = data_frame[
-            (data_frame[selected_category] == selected_category)
-            ]
-        print('filtered_df : \n', filtered_df)
+    #filter the data with the values selected in the dropdowns
+    filtered_df = filter_data_additive(selected_category, selected_subcategory) if additive_switch else filter_data(selected_category, selected_subcategory)
 
     # Obtiene las subcategorías de la columna seleccionada
-    subcategory_options = get_subcategory_options(selected_category)
+    subcategory_options = get_grouped_subcategories(selected_category)
+
+    print('Fitered on dashboard : \n', filtered_df)
 
     return filtered_df[excluded_columns].to_dict('records'),subcategory_options
 
-def get_subcategory_options(selected_category):
-    match selected_category:
-        case '1-Conocimiento científico abierto':
-            return ['Producción científica', 'Datos abiertos de investigación', 'Recursos Educativos Abiertos',
-                     'Programas informáticos de código abierto y código fuente abierto','Equipos informáticos de código abierto']	
-        	
-        case '2-Participación abierta de los agentes sociales ':
-            return ['Ciencia Ciudadana', 'Financiación Colectiva', 'Producción Colectiva','Voluntariado Científico']
-        
-        case '3-Diálogos abiertos con otros sistemas de conocimiento':
-            return ['Pueblos Indígenas', 'Investigadores Marginados', 'Comunidades Locales']
-        		
-        case '4-Infraestructuras de la ciencia abierta':
-            return ['Virtuales', 'Fisicas']
-        	
-        case '5-DIMENSIONES NO UNESCO':
-            return ['Evaluación abierta de la Ciencia', 'Innovación Abierta', 'Investigación abierta y reproducible']
-        		
-        case '6-Cuerpos Normativos':
-            return ['Nacionales', 'Institucionales']
-        	
-        case '7-OBJETIVOS UNESCO':
-            return ['A', 'B', 'C','D','E','F']
 
-    return ['empty']
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
