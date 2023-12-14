@@ -30,10 +30,18 @@ external_stylesheets = [
 #add the external stylesheets to the app
 app = Dash(__name__,external_stylesheets=external_stylesheets)
 
+# Asegúrate de que la columna "Correo contacto" sea de tipo cadena (string) para permitir la concatenación
+data_frame['Correo contacto'] = data_frame['Correo contacto'].astype(str)
+
+# Concatenar un icono a cada valor en la columna "Correo contacto"
+data_frame['Correo contacto'] = data_frame['Correo contacto'].apply(lambda x: f'<i class="fas fa-envelope"></i> {x}')
+
+
 
 #inside datatable if column is == 'Correo contacto' then display an icon
 app.layout = html.Div([
     
+    html.I(className='fas fa-info-circle', style={'font-size': '24px', 'margin-right': '10px'}),
     html.H1(children='Tabla de Datos', style={'textAlign': 'center'}),
 
         dcc.Checklist(
@@ -71,8 +79,9 @@ app.layout = html.Div([
         data=data_frame[excluded_columns].to_dict('records'),
         columns=[{'id': col, 'name': col} for col in excluded_columns],
         style_table={'height': '400px', 'overflowY': 'auto'},
-        style_cell={'minWidth': '150px', 'width': '150px', 'maxWidth': '150px'},
+        style_cell={'minWidth': '50px', 'maxWidth': '250px', 'textAlign': 'left'},
         style_header={'fontWeight': 'bold', 'backgroundColor': 'lightgrey'},
+        markdown_options={"html": True},
 
         tooltip_data=[
             {
@@ -96,11 +105,7 @@ app.layout = html.Div([
         'backgroundColor': '#ECECEC',
         'color': '#24BAC4',
         'cursor': 'pointer',
-        'children': [
-            html.I(className='fas fa-info-circle'),  # Icono de información de Font Awesome
-            html.Span(' ', style={'marginRight': '5px'}),  # Espaciado para separar el icono del texto
-            '{Correo contacto}',  # Texto de la celda
-        ],
+        'title': 'Test',
     },
     {
         'if': {'column_id': 'Nombre de la iniciativa'},
