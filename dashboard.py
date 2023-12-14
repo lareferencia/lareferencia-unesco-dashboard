@@ -9,7 +9,7 @@ from data import *
 data_frame = get_all_data()
 
 #columns to display in the table
-excluded_columns = ['Pais', 'Nombre de la iniciativa', 'Descripción', 'Sitio web', 'Correo contacto']
+excluded_columns = ['Pais', 'Nombre de la iniciativa', 'Sitio web', 'Correo contacto']
 
 #rest of columns (will be displayed in different dopdowns depending on the column value)
 rest_columns = data_frame.columns[5:]
@@ -73,15 +73,47 @@ app.layout = html.Div([
         style_table={'height': '400px', 'overflowY': 'auto'},
         style_cell={'minWidth': '150px', 'width': '150px', 'maxWidth': '150px'},
         style_header={'fontWeight': 'bold', 'backgroundColor': 'lightgrey'},
-        # Aplica el formato HTML a la columna 'Correo contacto'
+
         tooltip_data=[
             {
                 'Correo contacto': {
                     'type': 'text',
-                    'value': row['Correo contacto'] if pd.notna(row['Correo contacto']) else ''
-                }
-            } for row in data_frame.to_dict('records')
+                    'value': row['Correo contacto'] if pd.notna(row['Correo contacto']) else '',
+                },
+                'Nombre de la iniciativa': {
+                    'type': 'text',
+                    'value': row['Descripción'] if pd.notna(row['Descripción']) else '',
+                },
+            }
+            for row in data_frame.to_dict('records')
+            
         ],
+        tooltip_duration=None,
+        
+        style_data_conditional=[
+    {
+        'if': {'column_id': 'Correo contacto'},
+        'backgroundColor': '#ECECEC',
+        'color': '#24BAC4',
+        'cursor': 'pointer',
+        'children': [
+            html.I(className='fas fa-info-circle'),  # Icono de información de Font Awesome
+            html.Span(' ', style={'marginRight': '5px'}),  # Espaciado para separar el icono del texto
+            '{Correo contacto}',  # Texto de la celda
+        ],
+    },
+    {
+        'if': {'column_id': 'Nombre de la iniciativa'},
+        'backgroundColor': '#ECECEC',
+        'color': '#24BAC4',
+        'children': [
+            html.I(className='fas fa-info-circle'),
+            html.Span(' ', style={'marginRight': '5px'}),
+            '{Nombre de la iniciativa}',
+        ],
+    },
+],
+
     )
 ],style={'padding': '20px'})
 
