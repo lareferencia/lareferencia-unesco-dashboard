@@ -1,5 +1,7 @@
 from dash import Dash, dcc, html, Input, Output, dash_table
 
+import pandas as pd
+
 from data import *
 
 
@@ -20,10 +22,18 @@ categories_dropdown = rest_columns[rest_columns.str.match(r'\d+')]
 #dropdown options for subcategory
 subcategory_options = []
 
+# Define font awesome as an external stylesheet
+external_stylesheets = [
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css',
+]
 
-app = Dash(__name__)
+#add the external stylesheets to the app
+app = Dash(__name__,external_stylesheets=external_stylesheets)
 
+
+#inside datatable if column is == 'Correo contacto' then display an icon
 app.layout = html.Div([
+    
     html.H1(children='Tabla de Datos', style={'textAlign': 'center'}),
 
         dcc.Checklist(
@@ -59,12 +69,21 @@ app.layout = html.Div([
     dash_table.DataTable(
         id='data-table',
         data=data_frame[excluded_columns].to_dict('records'),
-        columns=[{'name': col, 'id': col} for col in excluded_columns],
+        columns=[{'id': col, 'name': col} for col in excluded_columns],
         style_table={'height': '400px', 'overflowY': 'auto'},
         style_cell={'minWidth': '150px', 'width': '150px', 'maxWidth': '150px'},
         style_header={'fontWeight': 'bold', 'backgroundColor': 'lightgrey'},
+        # Aplica el formato HTML a la columna 'Correo contacto'
+        tooltip_data=[
+            {
+                'Correo contacto': {
+                    'type': 'text',
+                    'value': row['Correo contacto'] if pd.notna(row['Correo contacto']) else ''
+                }
+            } for row in data_frame.to_dict('records')
+        ],
     )
-])
+],style={'padding': '20px'})
 
 @app.callback(
     [Output('data-table', 'data'),
@@ -73,8 +92,9 @@ app.layout = html.Div([
      Input('subcategory-dropdown', 'value'),
      Input('additive-switch', 'value')]
 )
-def update_table(selected_category, selected_subcategory,additive_switch):
+def update_table(selected_category, selected_subcategory,additive_switch): 
     #extract value from the checklist
+
     if additive_switch:
         print ('additive_switch : ', additive_switch[0])
     print('selected categories : ', selected_category)
@@ -92,6 +112,7 @@ def update_table(selected_category, selected_subcategory,additive_switch):
     print('Fitered on dashboard : \n', filtered_df)
 
     return filtered_df[excluded_columns].to_dict('records'),subcategory_options
+
 
 
 
