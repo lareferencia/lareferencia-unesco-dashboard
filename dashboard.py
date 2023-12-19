@@ -16,7 +16,7 @@ excluded_columns = ['Pais', 'Nombre de la iniciativa', 'Sitio web', 'Correo cont
 #rest of columns (will be displayed in different dopdowns depending on the column value)
 rest_columns = data_frame.columns[5:]
 
-categories_dropdown = rest_columns[rest_columns.str.match(r'\d+')]
+categories_dropdown = get_categories()
 #add option 'Todas' to the dropdown
 #categories_dropdown =categories_dropdown.tolist() + ['Todas']
 

@@ -1,5 +1,7 @@
 from pandas import read_csv, concat
 
+from categories_and_subcategories_protocol import *
+
 #dummy url
 dummy_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/dummy.csv'
 
@@ -9,18 +11,26 @@ data_frame = read_csv(dummy_url, delimiter=',', encoding='utf-8')
 def get_all_data():
     return data_frame
 
-#subcategories url
-subcategories_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/Subs.csv'
 
-def get_subcategories():
-    try:
-        # Utilizar pandas directamente para leer el CSV desde la URL
-        dummy_data = read_csv(subcategories_url, delimiter=',', encoding='utf-8',dtype={'Código': str, 'cod_categoría': str})
-        return dummy_data
-    except Exception as e:
-        print(f"Error loading subcategories: {e}")
-        return None
+def get_categories_set():
+    #extract codes
+    categories = data_frame['Subcategorías'].unique()
+    #create empty set
+    categories_set = set()
+    # Iterate through the categories and extract the first two digits of each code
+    for code in categories:
+        # Divide el código por comas y luego extrae los primeros dos dígitos de cada parte
+        segments = [part[:2] for part in code.split(',')]
+        # Agrega los primeros dos dígitos al conjunto
+        categories_set.update(segments)
+    return categories_set
 
+def get_categories():
+    categories_codes= list(get_categories_set())
+    category_names = []
+    for code in categories_codes:
+        category_names.append(get_category_by_code(code))
+    return category_names
 #######################################################################################################################################
 
 def get_data_by_column(category):

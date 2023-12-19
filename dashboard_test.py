@@ -1,6 +1,7 @@
 #pandas
 from pandas import read_csv, concat
 
+from categories_and_subcategories_protocol import *
 
 #read csv from this folder
 """ data_frame = read_csv('Modelo coma.csv', delimiter=',', encoding='utf-8')
@@ -74,5 +75,24 @@ url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/d
 
 #read csv from this folder
 data_frame = read_csv(url, delimiter=',', encoding='utf-8')
+#extract codes
+categories = data_frame['Subcategorías'].unique()
+#create empty set
+categories_set = set()
+# Itera sobre cada código en la columna 'Subcategorías'
+for code in categories:
+    # Divide el código por comas y luego extrae los primeros dos dígitos de cada parte
+    segments = [part[:2] for part in code.split(',')]
+    # Agrega los primeros dos dígitos al conjunto
+    categories_set.update(segments)
 
-print(data_frame)
+categories_codes= list(categories_set)    
+category_names = []
+for code in categories_codes:
+    category_names.append(get_category_by_code(code))
+
+
+print('Categories : ', categories)    
+print('codes : ', categories_set)
+print('category names : ', category_names)
+
