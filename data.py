@@ -18,6 +18,7 @@ def get_data_by_column(category):
         (data_frame[category] == category)
     ]
     return filtered_rows
+   
 
 ##########################################################################################
 

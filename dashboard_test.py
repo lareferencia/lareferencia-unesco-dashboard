@@ -3,7 +3,7 @@ from pandas import read_csv, concat
 
 
 #read csv from this folder
-data_frame = read_csv('Modelo coma.csv', delimiter=',', encoding='utf-8')
+""" data_frame = read_csv('Modelo coma.csv', delimiter=',', encoding='utf-8')
 
 #print rows where column '2-Participación abierta de los agentes sociales' is equal to '2-Participación abierta de los agentes sociales'
 
@@ -36,7 +36,7 @@ filtered_rows = filtered_rows.drop_duplicates()
 # Filter the DataFrame based on the combined condition
 #filtered_rows = data_frame[combined_condition]
 
-print('Array categories filtration : \n',filtered_rows[['Pais','Nombre de la iniciativa']])
+print('Array categories filtration : \n',filtered_rows[['Pais','Nombre de la iniciativa']]) """
 
 """ filtered_rows = data_frame[
     (data_frame['2-Participación abierta de los agentes sociales '] == '2-Participación abierta de los agentes sociales ') &
@@ -64,3 +64,13 @@ print(filtered_rows) """
 
 #print columns length
 #print(data_frame.columns.values)
+
+
+
+########################## Refactorzación de código #####################################
+
+#address where the csv is located
+url = 'https://raw.githubusercontent.com/Keynell272/Prueba/main/Modelo%20coma.csv'
+
+#read csv from this folder
+data_frame = read_csv(url, delimiter=',', encoding='utf-8')
