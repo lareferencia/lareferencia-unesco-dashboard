@@ -36,9 +36,13 @@ app = Dash(__name__,external_stylesheets=external_stylesheets)
 data_frame['Correo contacto'] = data_frame['Correo contacto'].astype(str)
 
 # Concatenar un icono a cada valor en la columna "Correo contacto"
-data_frame['Correo contacto'] = data_frame['Correo contacto'].apply(lambda x: f'<i class="fas fa-envelope"></i> {x}')
+data_frame['Correo contacto'] = data_frame['Correo contacto'].apply(lambda x: f'<i class="fas fa-envelope"></i>')
 
+# Asegúrate de que la columna "Sitio web" sea de tipo cadena (string) para permitir la concatenación
+data_frame['Sitio web'] = data_frame['Sitio web'].astype(str)
 
+# Convertir cada valor en la columna "Sitio web" en un enlace en el que se puede hacer clic
+data_frame['Sitio web'] = data_frame['Sitio web'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
 
 #inside datatable if column is == 'Correo contacto' then display an icon
 app.layout = html.Div([
@@ -79,7 +83,10 @@ app.layout = html.Div([
     dash_table.DataTable(
         id='data-table',
         data=data_frame[excluded_columns].to_dict('records'),
-        columns=[{'id': col, 'name': col} for col in excluded_columns],
+        columns=[
+            {'id': col, 'name': col, 'presentation': 'markdown'} if col in ['Sitio web', 'Correo contacto'] else {'id': col, 'name': col}
+            for col in excluded_columns
+        ],
         style_table={'height': '400px', 'overflowY': 'auto'},
         style_cell={'minWidth': '50px', 'maxWidth': '250px', 'textAlign': 'left'},
         style_header={'fontWeight': 'bold', 'backgroundColor': 'lightgrey'},
