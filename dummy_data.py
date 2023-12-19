@@ -1,20 +1,16 @@
 from pandas import read_csv, concat
 
-#address where the csv is located
-url = 'https://raw.githubusercontent.com/Keynell272/Prueba/main/Modelo%20coma.csv'
+#dummy url
+dummy_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/dummy.csv'
 
-
-#read csv from this folder
-data_frame = read_csv(url, delimiter=',', encoding='utf-8')
-
-
-
-#################################### get all data ########################################
+#with dummy data
+data_frame = read_csv(dummy_url, delimiter=',', encoding='utf-8')
 
 def get_all_data():
     return data_frame
 
-##########################################################################################
+
+#######################################################################################################################################
 
 def get_data_by_column(category):
     filtered_rows = data_frame[
@@ -113,5 +109,3 @@ def get_grouped_subcategories(categories):
     subcategories = list({subcategory['value']: subcategory for subcategory in subcategories}.values())
 
     return subcategories
-
-

@@ -1,0 +1,24 @@
+Subcategoría,Código,cod_categoría
+Producción científica,01,01
+Datos abiertos de investigación,02,01
+Programas informáticos de código abierto y código fuente abierto,03,01
+Ciencia Ciudadana,01,02
+Financiación Colectiva,02,02
+Producción Colectiva,03,02
+Voluntariado Científico,04,02
+Pueblos Indígenas,01,03
+Investigadores Marginados,02,03
+Comunidades Locales,03,03
+Virtuales,01,04
+Fisicas,02,04
+Evaluación abierta de la Ciencia,01,05
+Innovación Abierta,02,05
+Investigación abierta y reproducible,03,05
+Nacionales,01,06
+Institucionales,02,06
+A,01,07
+B,02,07
+C,03,07
+D,04,07
+E,05,07
+F,06,07

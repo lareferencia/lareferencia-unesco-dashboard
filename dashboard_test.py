@@ -70,7 +70,9 @@ print(filtered_rows) """
 ########################## Refactorzación de código #####################################
 
 #address where the csv is located
-url = 'https://raw.githubusercontent.com/Keynell272/Prueba/main/Modelo%20coma.csv'
+url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/dummy.csv'
 
 #read csv from this folder
 data_frame = read_csv(url, delimiter=',', encoding='utf-8')
+
+print(data_frame)

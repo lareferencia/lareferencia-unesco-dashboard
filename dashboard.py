@@ -2,7 +2,9 @@ from dash import Dash, dcc, html, Input, Output, dash_table
 
 import pandas as pd
 
-from data import *
+from dummy_data import *
+
+#from data import *
 
 
 #create a data frame with the csv
