@@ -10,12 +10,12 @@ def get_all_data():
     return data_frame
 
 #subcategories url
-subcategories_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/Subcategorías%20recomendaciones%20UNESCO%20-%20Hoja%201.csv'
+subcategories_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/Subs.csv'
 
 def get_subcategories():
     try:
         # Utilizar pandas directamente para leer el CSV desde la URL
-        dummy_data = read_csv(subcategories_url, delimiter=',', encoding='utf-8')
+        dummy_data = read_csv(subcategories_url, delimiter=',', encoding='utf-8',dtype={'Código': str, 'cod_categoría': str})
         return dummy_data
     except Exception as e:
         print(f"Error loading subcategories: {e}")

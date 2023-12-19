@@ -1,4 +1,8 @@
 from dummy_data import *
+
+#get data from csv
+subcategories = get_subcategories()
+
 def get_categories_by_code(code):
     match code:
         case '01':
@@ -18,15 +22,16 @@ def get_categories_by_code(code):
     return None
 
 def get_subcategories_by_code(code):
-    match code:
-        case '01':
-            return 'Texto 01'
-        case '02':
-            return 'Texto 02'
-        case '03':
-            return 'Texto 03'
-    return None
+    #slice the code to get the category code
+    category_code = code[:2]
+    #slice the code to get the subcategory code
+    sub_code = code[2:]
+    
+    filtro = (subcategories['Código']==category_code) & (subcategories['cod_categoría']==sub_code)
+    
+    return subcategories.loc[filtro,'Subcategoría'].values[0] if len(subcategories.loc[filtro,'Subcategoría'].values) > 0 else None
 
-subcategories = get_subcategories()
 
-print(subcategories)
+
+print(get_subcategories_by_code('0101'))
+
