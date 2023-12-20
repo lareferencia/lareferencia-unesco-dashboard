@@ -70,7 +70,7 @@ print(filtered_rows) """
 
 ########################## Refactorzación de código #####################################
 
-#address where the csv is located
+""" #address where the csv is located
 url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/dummy.csv'
 
 #read csv from this folder
@@ -95,4 +95,14 @@ for code in categories_codes:
 print('Categories : ', categories)    
 print('codes : ', categories_set)
 print('category names : ', category_names)
+ """
+from new_data import *
 
+df = get_all_data()
+
+filtro = df['SUBDISCIPLINES'].apply(lambda x: any(subdisciplina.startswith('03') for subdisciplina in str(x).split(',')))
+
+# Aplicar el filtro al DataFrame
+df_filtrado = df[filtro]
+
+print(df_filtrado)

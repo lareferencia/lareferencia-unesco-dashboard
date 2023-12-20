@@ -33,6 +33,24 @@ def get_category_by_code(code):
             return 'OBJETIVOS UNESCO'
     return None
 
+def get_code_by_category(category):
+    match category:
+        case 'Conocimiento científico abierto':
+            return '01'
+        case 'Participación abierta de los agentes sociales ':
+            return '02'
+        case 'Diálogos abiertos con otros sistemas de conocimiento':
+            return '03'
+        case 'Infraestructuras de la ciencia abierta':
+            return '04'
+        case 'DIMENSIONES NO UNESCO':
+            return '05'
+        case 'Cuerpos Normativos':
+            return '06'
+        case 'OBJETIVOS UNESCO':
+            return '07'
+    return None
+
 def get_subcategories_by_code(code):
     #slice the code to get the category code
     category_code = code[:2]

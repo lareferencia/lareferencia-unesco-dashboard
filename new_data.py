@@ -77,4 +77,32 @@ def get_subcategory_names():
         subcategory_names.append(get_subcategories_by_code(code))
     return subcategory_names
 
-print
+
+########################## all categories in dictionary with code ##########################
+def get_categories_list():
+    categories_codes= list(get_categories_set())
+    categories_list = []
+    if categories_codes is not None:
+        for code in categories_codes:
+            #append dictionary to the list of dictionaries
+            categories_list.append({'label': get_category_by_code(code), 'value': code})
+        return categories_list
+    else:
+        return []
+
+
+########################## Filter data exclusive (no additive) ##########################
+
+def filter_data(categories):
+    print('Inside filter data exclusive')
+    filtered_rows = get_all_data()
+
+    for category in categories:
+        filtro = filtered_rows['SUBDISCIPLINES'].apply(lambda x: any(subdisciplina.startswith(category) for subdisciplina in str(x).split(',')))
+
+        # Aplicar el filtro al DataFrame
+        filtered_rows = filtered_rows[filtro]
+    
+    
+
+    return filtered_rows
