@@ -38,10 +38,10 @@ def get_subcategories_by_code(code):
     category_code = code[:2]
     #slice the code to get the subcategory code
     sub_code = code[2:]
-    
-    filtro = (subcategories['Código']==category_code) & (subcategories['cod_categoría']==sub_code)
-    
-    return subcategories.loc[filtro,'Subcategoría'].values[0] if len(subcategories.loc[filtro,'Subcategoría'].values) > 0 else None
-
-
+    filtro = (subcategories['Código']==sub_code) & (subcategories['cod_categoría']==category_code)
+    if len(subcategories.loc[filtro,'Subcategoría'].values) > 0:
+        return subcategories.loc[filtro,'Subcategoría'].values[0]  
+    else:
+        print('No se encontró la subcategoría para el codigo -> ',code)
+        return None
 

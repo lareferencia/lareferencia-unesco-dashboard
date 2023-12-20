@@ -63,11 +63,18 @@ def get_subcategories_set():
     
 
 ########################## GET CATEGORY NAMES ##########################
-def get_categories():
+def get_category_names():
     categories_codes= list(get_categories_set())
     category_names = []
     for code in categories_codes:
         category_names.append(get_category_by_code(code))
     return category_names
 
-print(get_all_data()['SUBDISCIPLINES'].unique())
+def get_subcategory_names():
+    subcategories_codes= list(get_subcategories_set())
+    subcategory_names = []
+    for code in subcategories_codes:
+        subcategory_names.append(get_subcategories_by_code(code))
+    return subcategory_names
+
+print(get_subcategory_names())
