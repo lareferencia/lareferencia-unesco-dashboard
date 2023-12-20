@@ -77,4 +77,4 @@ def get_subcategory_names():
         subcategory_names.append(get_subcategories_by_code(code))
     return subcategory_names
 
-print(get_subcategory_names())
+print

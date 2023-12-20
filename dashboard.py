@@ -2,7 +2,7 @@ from dash import Dash, dcc, html, Input, Output, dash_table
 
 import pandas as pd
 
-from dummy_data import *
+from new_data import *
 
 #from data import *
 
@@ -11,12 +11,12 @@ from dummy_data import *
 data_frame = get_all_data()
 
 #columns to display in the table
-excluded_columns = ['Pais', 'Nombre de la iniciativa', 'Sitio web', 'Correo contacto']
+excluded_columns = ['CODIGO', 'Nombre de la iniciativa', 'WEB', 'CONTACTO']
 
 #rest of columns (will be displayed in different dopdowns depending on the column value)
 rest_columns = data_frame.columns[5:]
 
-categories_dropdown = get_categories()
+categories_dropdown = get_category_names()
 #add option 'Todas' to the dropdown
 #categories_dropdown =categories_dropdown.tolist() + ['Todas']
 
@@ -33,16 +33,16 @@ external_stylesheets = [
 app = Dash(__name__,external_stylesheets=external_stylesheets)
 
 # Asegúrate de que la columna "Correo contacto" sea de tipo cadena (string) para permitir la concatenación
-data_frame['Correo contacto'] = data_frame['Correo contacto'].astype(str)
+data_frame['CONTACTO'] = data_frame['CONTACTO'].astype(str)
 
 # Concatenar un icono a cada valor en la columna "Correo contacto"
-data_frame['Correo contacto'] = data_frame['Correo contacto'].apply(lambda x: f'<i class="fas fa-envelope"></i>')
+data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope"></i>')
 
 # Asegúrate de que la columna "Sitio web" sea de tipo cadena (string) para permitir la concatenación
-data_frame['Sitio web'] = data_frame['Sitio web'].astype(str)
+data_frame['WEB'] = data_frame['WEB'].astype(str)
 
 # Convertir cada valor en la columna "Sitio web" en un enlace en el que se puede hacer clic
-data_frame['Sitio web'] = data_frame['Sitio web'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
+data_frame['WEB'] = data_frame['WEB'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
 
 #inside datatable if column is == 'Correo contacto' then display an icon
 app.layout = html.Div([
@@ -84,7 +84,7 @@ app.layout = html.Div([
         id='data-table',
         data=data_frame[excluded_columns].to_dict('records'),
         columns=[
-            {'id': col, 'name': col, 'presentation': 'markdown'} if col in ['Sitio web', 'Correo contacto'] else {'id': col, 'name': col}
+            {'id': col, 'name': col, 'presentation': 'markdown'} if col in ['WEB', 'CONTACTO'] else {'id': col, 'name': col}
             for col in excluded_columns
         ],
         style_table={'height': '400px', 'overflowY': 'auto'},
@@ -94,13 +94,13 @@ app.layout = html.Div([
 
         tooltip_data=[
             {
-                'Correo contacto': {
+                'CONTACTO': {
                     'type': 'text',
-                    'value': row['Correo contacto'] if pd.notna(row['Correo contacto']) else '',
+                    'value': row['CONTACTO'] if pd.notna(row['CONTACTO']) else '',
                 },
                 'Nombre de la iniciativa': {
                     'type': 'text',
-                    'value': row['Descripción'] if pd.notna(row['Descripción']) else '',
+                    'value': row['Función de la iniciativa'] if pd.notna(row['Función de la iniciativa']) else '',
                 },
             }
             for row in data_frame.to_dict('records')
@@ -110,7 +110,7 @@ app.layout = html.Div([
         
         style_data_conditional=[
     {
-        'if': {'column_id': 'Correo contacto'},
+        'if': {'column_id': 'CONTACTO'},
         'backgroundColor': '#ECECEC',
         'color': '#24BAC4',
         'cursor': 'pointer',
