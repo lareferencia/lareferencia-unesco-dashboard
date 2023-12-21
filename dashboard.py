@@ -2,7 +2,7 @@ from dash import Dash, dcc, html, Input, Output, dash_table
 
 import pandas as pd
 
-from new_data import *
+from data import *
 
 #from data import *
 
@@ -50,32 +50,16 @@ app.layout = html.Div([
     html.I(className='fas fa-info-circle', style={'font-size': '24px', 'margin-right': '10px'}),
     html.H1(children='Tabla de Datos', style={'textAlign': 'center'}),
 
-        dcc.Checklist(
-        id='additive-switch',
-        options=[
-            {'label': 'Aditivo', 'value': True}
-        ],
-        value=[]
-    ),
 
     html.Div([    
         dcc.Dropdown(
         id='column-dropdown',
         options=categories_dropdown,
-        placeholder='Seleccione una o varias categorías ... ',
+        placeholder='Seleccione una o varias categorías o subcategorías... ',
         clearable=True,
         multi=True,
         style={'width': '100%'}  
-    ),
-
-    dcc.Dropdown(
-        id='subcategory-dropdown',
-        options=[{'label': subcategory, 'value': subcategory} for subcategory in subcategory_options],
-        placeholder='Seleccione una o varias sub-categorías ... ',
-        clearable=True,  
-        multi=True,
-        style={'width': '100%'}  
-    )], 
+    ),], 
     style={'textAlign': 'center', 'background-color': 'lightgrey', 'display':'flex', 'justify-content':'center'}),
 
 
@@ -132,22 +116,24 @@ app.layout = html.Div([
 ],style={'padding': '20px'})
 
 @app.callback(
-    [Output('data-table', 'data')],
-    [Input('column-dropdown', 'value'),
-     Input('additive-switch', 'value')]
+    [
+        Output('data-table', 'data'),
+        Output('column-dropdown', 'options')
+    ],
+    [Input('column-dropdown', 'value')]
 )
-def update_table(selected_category, additive_switch): 
+def update_table(selected_category): 
     if not selected_category:
         # Si no se ha seleccionado ninguna columna o se selecciona Todas, muestra todas las filas
-        return [data_frame[excluded_columns].to_dict('records')]
+        return data_frame[excluded_columns].to_dict('records'), categories_dropdown
 
-    print('about to filter data')
+    # Filtrar el dataframe en función de las columnas seleccionadas
     filtered_df = filter_data(selected_category)
+    
+    #nuevas categorias y subcategorias a partir de los datos filtrados
+    new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
 
-
-    print('Fitered on dashboard : \n', filtered_df)
-
-    return [filtered_df[excluded_columns].to_dict('records')]
+    return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown
 
 
 

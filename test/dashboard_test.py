@@ -96,7 +96,7 @@ print('Categories : ', categories)
 print('codes : ', categories_set)
 print('category names : ', category_names)
  """
-from new_data import *
+from data import *
 
 df = get_all_data()
 

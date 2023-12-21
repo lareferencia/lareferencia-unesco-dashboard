@@ -1,4 +1,4 @@
-from dummy_data import *
+from pandas import read_csv, concat, notna
 
 #subcategories url
 subcategories_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/Subs.csv'
@@ -51,7 +51,7 @@ def get_code_by_category(category):
             return '07'
     return None
 
-def get_subcategories_by_code(code):
+def get_subcategory_by_code(code):
     #slice the code to get the category code
     category_code = code[:2]
     #slice the code to get the subcategory code
@@ -62,4 +62,17 @@ def get_subcategories_by_code(code):
     else:
         print('No se encontró la subcategoría para el codigo -> ',code)
         return None
+
+def get_code_by_subcategory(subcategory):
+    #get the category code
+    filtro=subcategories['Subcategoría'].str.strip()==subcategory
+    category_code = subcategories.loc[filtro,'cod_categoría'].values[0]
+    subcategory_code = subcategories.loc[filtro,'Código'].values[0]
+
+    return category_code + subcategory_code
+
+
+def get_subcategories_by_category_code(category_code):
+    filtro = subcategories['cod_categoría']==category_code
+    return subcategories.loc[filtro,'Subcategoría'].values
 

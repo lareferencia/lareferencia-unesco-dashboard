@@ -1,117 +1,207 @@
-from pandas import read_csv, concat
+from pandas import read_csv, concat, notna
 
-#address where the csv is located
-url = 'https://raw.githubusercontent.com/Keynell272/Prueba/main/Modelo%20coma.csv'
+from categories_and_subcategories_protocol import *
 
-
-#read csv from this folder
-data_frame = read_csv(url, delimiter=',', encoding='utf-8')
-
-
-
-#################################### get all data ########################################
+#url
+url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/full.csv'
 
 def get_all_data():
-    return data_frame
+    try:
+        #get data from csv skipping first two rows and ignoring last 8 rows
+        data_frame = read_csv(url, delimiter=',', encoding='utf-8', skiprows=2,skipfooter=8,engine='python',dtype={'SUBDISCIPLINES': str})
+        return data_frame
+    except Exception as e:
+        print(f"Error loading data: {e}")
+        return None
+    
 
-##########################################################################################
+########################## SET CATEGORIAS ##########################
+def get_categories_set():
+    data_frame = get_all_data()
 
-def get_data_by_column(category):
-    filtered_rows = data_frame[
-        (data_frame[category] == category)
-    ]
+    if data_frame is not None:
+        # extract codes
+        categories = data_frame['SUBDISCIPLINES'].unique()
+        # create empty set
+        categories_set = set()
+
+        # Iterate through the categories and extract the first two digits of each code
+        for code in categories:
+            # Check if the code is not null
+            if notna(code):
+                # Divide el código por comas y luego extrae los primeros dos dígitos de cada parte
+                segments = [part[:2] for part in code.split(',')]
+                # Agrega los primeros dos dígitos al conjunto
+                categories_set.update(segments)
+
+        return categories_set
+    else:
+        return set()
+    
+########################## SET CATEGORIA BY GIVEN DATA FRAME ##########################
+def get_categories_set_from_data_frame(data):
+    data_frame=data
+    if data_frame is not None:
+        # extract codes
+        categories = data_frame['SUBDISCIPLINES'].unique()
+        # create empty set
+        categories_set = set()
+
+        # Iterate through the categories and extract the first two digits of each code
+        for code in categories:
+            # Check if the code is not null
+            if notna(code):
+                # Divide el código por comas y luego extrae los primeros dos dígitos de cada parte
+                segments = [part[:2] for part in code.split(',')]
+                # Agrega los primeros dos dígitos al conjunto
+                categories_set.update(segments)
+
+        return categories_set
+    else:
+        return set()
+    
+########################## SET SUBCATEGORIA BY GIVEN DATA FRAME ##########################
+def get_subcategories_set_from_data_frame(data):
+    data_frame=data
+    if data_frame is not None:
+        # extract codes
+        subcategories = data_frame['SUBDISCIPLINES'].unique()
+        # create empty set
+        subcategories_set = set()
+
+        # Iterate through the categories and extract the first two digits of each code
+        for code in subcategories:
+            # Check if the code is not null
+            if notna(code):
+                # Divide el código por comas y luego extrae los primeros dos dígitos de cada parte
+                segments = [part for part in code.split(',')]
+                # Agrega los primeros dos dígitos al conjunto
+                subcategories_set.update(segments)
+
+        return subcategories_set
+    else:
+        return set()
+
+########################## SET SUBCATEGORIAS ##########################
+def get_subcategories_set():
+    data_frame = get_all_data()
+
+    if data_frame is not None:
+        # extract codes
+        codes = data_frame['SUBDISCIPLINES'].unique()
+        # create empty set
+        subcategories_set = set()
+
+        # Iterate through the categories and extract the first two digits of each code
+        for code in codes:
+            # Check if the code is not null
+            if notna(code):
+                # Divide el código por comas y luego extrae los primeros dos dígitos de cada parte
+                segments = [part for part in code.split(',')]
+                # Agrega los primeros dos dígitos al conjunto
+                subcategories_set.update(segments)
+
+        return subcategories_set
+    else:
+        return set()
+    
+
+########################## GET CATEGORY NAMES ##########################
+def get_category_names():
+    categories_codes= list(get_categories_set())
+    category_names = []
+    for code in categories_codes:
+        category_names.append(get_category_by_code(code))
+    return category_names
+
+def get_subcategory_names():
+    subcategories_codes= list(get_subcategories_set())
+    subcategory_names = []
+    for code in subcategories_codes:
+        subcategory_names.append(get_subcategory_by_code(code))
+    return subcategory_names
+
+
+########################## all categories in dictionary with code ##########################
+def get_categories_list():
+    categories_codes= list(get_categories_set())
+    categories_list = []
+    if categories_codes is not None:
+        for code in categories_codes:
+            #create label with name and count
+            label = f'{get_category_by_code(code)} ({get_category_count(code)})'
+            #append dictionary to the list of dictionaries
+            categories_list.append({'label': label, 'value': code})
+            #get subcategories for each category
+            subcategories = get_subcategories_by_category_code(code)
+            for subcategory in subcategories:
+                #create label with name and count
+                label = f'..... {subcategory} ({get_subcategory_count(get_code_by_subcategory(subcategory))})'
+                #append dictionary to the list of dictionaries
+                categories_list.append({'label': label, 'value': get_code_by_subcategory(subcategory)})
+        return categories_list
+    else:
+        return []
+    
+########################## all categories in dictionary with code FROM GIVEN DATA FRAME ##########################
+def get_categories_list_from_data_frame(data_frame):
+    categories_codes= list(get_categories_set_from_data_frame(data_frame))
+    subcategories_codes= list(get_subcategories_set_from_data_frame(data_frame))
+    categories_list = []
+    if categories_codes is not None:
+        for code in categories_codes:
+            #create label with name and count
+            label = f'{get_category_by_code(code)} ({get_category_count(code)})'
+            #append dictionary to the list of dictionaries
+            categories_list.append({'label': label, 'value': code})
+            #get subcategories for each category
+            subcategories = get_subcategories_by_category_code(code)
+            for subcategory in subcategories:
+                #check if subcategory code is in the subcategories codes list
+                if get_code_by_subcategory(subcategory) in subcategories_codes:
+                    #create label with name and count
+                    label = f'..... {subcategory} ({get_subcategory_count(get_code_by_subcategory(subcategory))})'
+                    #append dictionary to the list of dictionaries
+                    categories_list.append({'label': label, 'value': get_code_by_subcategory(subcategory)})
+        return categories_list
+    else:
+        return []
+
+
+###################### get count for category ######################
+def get_category_count(category):
+    data_frame = get_all_data()
+    if data_frame is not None:
+        #get count for category
+        filtro = data_frame['SUBDISCIPLINES'].apply(lambda x: any(subdisciplina.startswith(category) for subdisciplina in str(x).split(',')))
+        count = len(data_frame[filtro])
+        return count
+    else:
+        return 0
+
+###################### get count for subcategory ######################
+def get_subcategory_count(subcategory):
+    data_frame = get_all_data()
+    if data_frame is not None:
+        #get count for subcategory
+        filtro = data_frame['SUBDISCIPLINES'].apply(lambda x: any(subdisciplina.startswith(subcategory) for subdisciplina in str(x).split(',')))
+        count = len(data_frame[filtro])
+        return count
+    else:
+        return 0
+
+
+########################## Filter data exclusive (no additive) ##########################
+
+def filter_data(categories):
+    filtered_rows = get_all_data()
+
+    for category in categories:
+        filtro = filtered_rows['SUBDISCIPLINES'].apply(lambda x: any(subdisciplina.startswith(category) for subdisciplina in str(x).split(',')))
+
+        # Aplicar el filtro al DataFrame
+        filtered_rows = filtered_rows[filtro]
+    
+    
+
     return filtered_rows
-   
-
-##########################################################################################
-
-def get_subcategory_options(selected_category):
-    match selected_category:
-        case '1-Conocimiento científico abierto':
-            return ['Producción científica', 'Datos abiertos de investigación', 'Recursos Educativos Abiertos',
-                     'Programas informáticos de código abierto y código fuente abierto','Equipos informáticos de código abierto']	
-        	
-        case '2-Participación abierta de los agentes sociales ':
-            return ['Ciencia Ciudadana', 'Financiación Colectiva', 'Producción Colectiva','Voluntariado Científico']
-        
-        case '3-Diálogos abiertos con otros sistemas de conocimiento':
-            return ['Pueblos Indígenas', 'Investigadores Marginados', 'Comunidades Locales']
-        		
-        case '4-Infraestructuras de la ciencia abierta':
-            return ['Virtuales', 'Fisicas']
-        	
-        case '5-DIMENSIONES NO UNESCO':
-            return ['Evaluación abierta de la Ciencia', 'Innovación Abierta', 'Investigación abierta y reproducible']
-        		
-        case '6-Cuerpos Normativos':
-            return ['Nacionales', 'Institucionales']
-        	
-        case '7-OBJETIVOS UNESCO':
-            return ['A', 'B', 'C','D','E','F']
-
-    return []
-############################## Filter ###################################################
-
- #No excluyente
-def filter_data_additive(categories,subcategories):
-    print('subcategories : ', subcategories)
-    #filter data set to an empty data frame
-    filtered_rows = None
-    # Loop through the columns to get the data
-    for col in categories:
-        current_data = get_data_by_column(col)
-         # Concatenate the current_data with the existing filtered_rows
-        filtered_rows = concat([filtered_rows, current_data])  
-    #loop through the subcategories
-    if subcategories:
-        for col in subcategories:
-            current_data = get_data_by_column(col)
-            # Concatenate the current_data with the existing filtered_rows
-            filtered_rows = concat([filtered_rows, current_data])
-
-
-    # Drop duplicates from the concatenated DataFrame
-    filtered_rows = filtered_rows.drop_duplicates()
-
-    return filtered_rows
-
-#excluyente
-def filter_data(categories, subcategories):
-    print('subcategories : ', subcategories)
-
-    # Inicializar DataFrame para almacenar filas filtradas
-    filtered_rows = data_frame.copy()
-
-    # Filtrar por categorías
-    for col in categories:
-        filtered_rows = filtered_rows[filtered_rows[col].isin([col])]
-
-    # Filtrar por subcategorías
-    if subcategories:
-        for col in subcategories:
-            filtered_rows = filtered_rows[filtered_rows[col].isin([col])]
-
-    return filtered_rows
-##########################################################################################
-
-########################## Get grouped subcategories #####################################
-def get_grouped_subcategories(categories):
-    # Initialize an empty list to store subcategories
-    subcategories = []
-
-    # Loop through the columns to get the data
-    for col in categories:
-        current_data = get_subcategory_options(col)
-        
-        # Create a list of dictionaries with 'label' and 'value' keys
-        current_subcategories = [{'label': subcategory, 'value': subcategory} for subcategory in current_data]
-
-        # Extend the main list with the current_subcategories
-        subcategories.extend(current_subcategories)
-
-    # Remove duplicates by converting the list to a set and back to a list
-    subcategories = list({subcategory['value']: subcategory for subcategory in subcategories}.values())
-
-    return subcategories
-
-
