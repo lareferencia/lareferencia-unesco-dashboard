@@ -127,11 +127,17 @@ def update_table(selected_category):
         # Si no se ha seleccionado ninguna columna o se selecciona Todas, muestra todas las filas
         return data_frame[excluded_columns].to_dict('records'), categories_dropdown
 
+
     # Filtrar el dataframe en función de las columnas seleccionadas
     filtered_df = filter_data(selected_category)
+
     
+    time_inicial = time.time()
     #nuevas categorias y subcategorias a partir de los datos filtrados
     new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+    time_final = time.time()
+    time_ejecucion = time_final - time_inicial
+    print('Tiempo de ejecución de get_categories_list_from_data_frame: ',time_ejecucion)
 
     return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown
 
