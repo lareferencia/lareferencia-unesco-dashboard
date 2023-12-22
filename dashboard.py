@@ -32,19 +32,18 @@ external_stylesheets = [
 #add the external stylesheets to the app
 app = Dash(__name__,external_stylesheets=external_stylesheets)
 
-# Asegúrate de que la columna "Correo contacto" sea de tipo cadena (string) para permitir la concatenación
+#Set column 'Contacto' as string
 data_frame['CONTACTO'] = data_frame['CONTACTO'].astype(str)
 
-# Concatenar un icono a cada valor en la columna "Correo contacto"
+#Concat 'Contacto' column with an icon
 data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope"></i>')
 
-# Asegúrate de que la columna "Sitio web" sea de tipo cadena (string) para permitir la concatenación
+# Set column 'WEB' as string
 data_frame['WEB'] = data_frame['WEB'].astype(str)
 
-# Convertir cada valor en la columna "Sitio web" en un enlace en el que se puede hacer clic
+# Convert 'WEB' column to a link
 data_frame['WEB'] = data_frame['WEB'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
 
-#inside datatable if column is == 'Correo contacto' then display an icon
 app.layout = html.Div([
     
     html.I(className='fas fa-info-circle', style={'font-size': '24px', 'margin-right': '10px'}),
@@ -133,8 +132,10 @@ def update_table(selected_category):
 
     
     time_inicial = time.time()
+    
     #nuevas categorias y subcategorias a partir de los datos filtrados
     new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+    
     time_final = time.time()
     time_ejecucion = time_final - time_inicial
     print('Tiempo de ejecución de get_categories_list_from_data_frame: ',time_ejecucion)
