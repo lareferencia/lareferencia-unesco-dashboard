@@ -7,15 +7,15 @@ import time
 #url
 url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/full.csv'
 
-def get_all_data():
-    try:
-        #get data from csv skipping first two rows and ignoring last 8 rows
-        data_frame = read_csv(url, delimiter=',', encoding='utf-8', skiprows=2,skipfooter=8,engine='python',dtype={'SUBDISCIPLINES': str})
-        return data_frame
-    except Exception as e:
-        print(f"Error loading data: {e}")
-        return None
+
+try:
+    #get data from csv skipping first two rows and ignoring last 8 rows
+    data_frame = read_csv(url, delimiter=',', encoding='utf-8', skiprows=2,skipfooter=8,engine='python',dtype={'SUBDISCIPLINES': str})
+except Exception as e:
+    print(f"Error loading data: {e}")
     
+def get_all_data():
+    return data_frame
 
 ########################## SET CATEGORIAS ##########################
 def get_categories_set():
@@ -132,7 +132,7 @@ def get_subcategory_names():
 
 ########################## all categories in dictionary with code ##########################
 def get_categories_list():
-    categories_codes= list(get_categories_set())
+    categories_codes= sorted(get_categories_set(), key=lambda x: int(x))
     categories_list = []
     if categories_codes is not None:
         for code in categories_codes:
@@ -145,8 +145,8 @@ def get_categories_list():
             for subcategory in subcategories:
                 code_subcategory = get_code_by_subcategory(subcategory)
                 #create label with name and count
-                #label = f'..... {subcategory} ({get_subcategory_count(code_subcategory)})'
-                label = f'..... {subcategory} '
+                label = f'..... {subcategory} ({get_subcategory_count(code_subcategory)})'
+                #label = f'..... {subcategory} '
                 #append dictionary to the list of dictionaries
                 categories_list.append({'label': label, 'value': code_subcategory})
         return categories_list
@@ -155,13 +155,14 @@ def get_categories_list():
     
 ########################## all categories in dictionary with code FROM GIVEN DATA FRAME ##########################
 def get_categories_list_from_data_frame(data_frame):
-    categories_codes= list(get_categories_set_from_data_frame(data_frame))
+    #categories_codes= list(get_categories_set_from_data_frame(data_frame))
     subcategories_codes= list(get_subcategories_set_from_data_frame(data_frame))  
+    categories_codes = sorted(set([s[:2] for s in subcategories_codes]), key=lambda x: int(x))
     categories_list = []
     if categories_codes is not None:
         for code in categories_codes:
             #create label with name and count
-            label = f'{get_category_by_code(code)} ({get_category_count(code)})'
+            label = f'{get_category_by_code(code)} ({get_category_count_filtered(code,data_frame)})'
             #append dictionary to the list of dictionaries
             categories_list.append({'label': label, 'value': code})
             #get subcategories for each category
@@ -171,8 +172,8 @@ def get_categories_list_from_data_frame(data_frame):
                 code_subcategory = get_code_by_subcategory(subcategory)
                 if code_subcategory in subcategories_codes:
                     #create label with name and count
-                    #label = f'..... {subcategory} ({get_subcategory_count(code_subcategory)})'
-                    label = f'..... {subcategory} '
+                    label = f'..... {subcategory} ({get_subcategory_count_filtered(code_subcategory,data_frame)})'
+                    #label = f'..... {subcategory} '
                     #append dictionary to the list of dictionaries
                     categories_list.append({'label': label, 'value': code_subcategory})
         return categories_list
@@ -191,16 +192,34 @@ def get_category_count(category):
     else:
         return 0
 
+###################### get count for category with filtered data_frame ######################
+def get_category_count_filtered(category,filtered_data_frame):
+    data_frame = filtered_data_frame
+    if data_frame is not None:
+        #get count for category
+        filtro = data_frame['SUBDISCIPLINES'].apply(lambda x: any(subdisciplina.startswith(category) for subdisciplina in str(x).split(',')))
+        count = len(data_frame[filtro])
+        return count
+    else:
+        return 0
+
 ###################### get count for subcategory ######################
 def get_subcategory_count(subcategory):
     data_frame = get_all_data()
     if data_frame is not None:
         #get count for subcategory
-        time_inicial = time.time()
         filtro = data_frame['SUBDISCIPLINES'].apply(lambda x: any(subdisciplina.startswith(subcategory) for subdisciplina in str(x).split(',')))
-        time_final = time.time()
-        time_ejecucion = time_final - time_inicial
-        print('Tiempo de ejecución de get_subcategory_count: ',time_ejecucion)
+        count = len(data_frame[filtro])
+        return count
+    else:
+        return 0
+    
+###################### get count for subcategory in filtered data frame#################
+def get_subcategory_count_filtered(subcategory,filtered_data_frame):
+    data_frame = filtered_data_frame
+    if data_frame is not None:
+        #get count for subcategory
+        filtro = data_frame['SUBDISCIPLINES'].apply(lambda x: any(subdisciplina.startswith(subcategory) for subdisciplina in str(x).split(',')))
         count = len(data_frame[filtro])
         return count
     else:

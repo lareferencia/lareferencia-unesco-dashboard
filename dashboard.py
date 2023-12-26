@@ -16,9 +16,13 @@ excluded_columns = ['CODIGO', 'Nombre de la iniciativa', 'WEB', 'CONTACTO']
 #rest of columns (will be displayed in different dopdowns depending on the column value)
 rest_columns = data_frame.columns[5:]
 
+time_inicial = time.time()
+
 categories_dropdown = get_categories_list()
-#add option 'Todas' to the dropdown
-#categories_dropdown =categories_dropdown.tolist() + ['Todas']
+
+time_final = time.time()
+time_ejecucion = time_final - time_inicial
+print('Tiempo de ejecución de get_categories_list: ',time_ejecucion)
 
 
 #dropdown options for subcategory
