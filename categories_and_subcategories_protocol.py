@@ -1,7 +1,19 @@
 from pandas import read_csv, concat, notna
 
+#categories_url
+categories_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/csv%20files/Categories.csv'
+
 #subcategories url
-subcategories_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/Subs.csv'
+subcategories_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/csv%20files/Subcategories.csv'
+
+def get_categories():
+    try:
+        # Utilizar pandas directamente para leer el CSV desde la URL
+        dummy_data = read_csv(categories_url, delimiter=',', encoding='utf-8',dtype={'Código': str, 'cod_categoría': str})
+        return dummy_data
+    except Exception as e:
+        print(f"Error loading categories: {e}")
+        return None
 
 def get_subcategories():
     try:
@@ -10,46 +22,24 @@ def get_subcategories():
         return dummy_data
     except Exception as e:
         print(f"Error loading subcategories: {e}")
-        return None
+        return None    
+
+#get data from csv
+categories = get_categories()
 
 #get data from csv
 subcategories = get_subcategories()
 
+
 def get_category_by_code(code):
-    match code:
-        case '01':
-            return 'Conocimiento científico abierto'
-        case '02':
-            return 'Participación abierta de los agentes sociales'
-        case '03':
-            return 'Diálogos abiertos con otros sistemas de conocimiento'
-        case '04':
-            return 'Infraestructuras de la ciencia abierta'
-        case '05':
-            return 'DIMENSIONES NO UNESCO'
-        case '06':
-            return 'Cuerpos Normativos'
-        case '07':
-            return 'OBJETIVOS UNESCO'
-    return None
+    filtro = categories['cod_categoría']==code
+    return categories.loc[filtro,'Categoría'].values[0]
+
 
 def get_code_by_category(category):
-    match category:
-        case 'Conocimiento científico abierto':
-            return '01'
-        case 'Participación abierta de los agentes sociales ':
-            return '02'
-        case 'Diálogos abiertos con otros sistemas de conocimiento':
-            return '03'
-        case 'Infraestructuras de la ciencia abierta':
-            return '04'
-        case 'DIMENSIONES NO UNESCO':
-            return '05'
-        case 'Cuerpos Normativos':
-            return '06'
-        case 'OBJETIVOS UNESCO':
-            return '07'
-    return None
+    filtro = categories['Categoría']==category
+    return categories.loc[filtro,'cod_categoría'].values[0]
+
 
 def get_subcategory_by_code(code):
     #slice the code to get the category code
