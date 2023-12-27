@@ -5,7 +5,7 @@ from categories_and_subcategories_protocol import *
 import time
 
 #url
-url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/full.csv'
+url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/csv%20files/full.csv'
 
 
 try:
