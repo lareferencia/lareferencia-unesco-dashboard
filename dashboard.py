@@ -59,7 +59,6 @@ app.layout = html.Div([
         id='column-dropdown',
         options=categories_dropdown,
         placeholder='Seleccione una o varias categorías o subcategorías... ',
-        clearable=True,
         multi=True,
         style={'width': '100%'}  
     ),], 
