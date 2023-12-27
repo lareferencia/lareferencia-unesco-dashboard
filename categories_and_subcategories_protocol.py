@@ -20,7 +20,7 @@ def get_category_by_code(code):
         case '01':
             return 'Conocimiento científico abierto'
         case '02':
-            return 'Participación abierta de los agentes sociales '
+            return 'Participación abierta de los agentes sociales'
         case '03':
             return 'Diálogos abiertos con otros sistemas de conocimiento'
         case '04':
