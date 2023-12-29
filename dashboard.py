@@ -10,8 +10,29 @@ from data import *
 #create a data frame with the csv
 data_frame = get_all_data()
 
+codigo_a_pais = {
+    'AR': 'Argentina',
+    'BR': 'Brazil',
+    'CR': 'Costa Rica',
+    'EC': 'Ecuador',
+    'ES': 'Espana',
+    'UY': 'Uruguay',
+    'PE': 'Peru',
+    'MX': 'Mexico',
+    'PA': 'Panama',
+    'SV': 'El Salvador',
+    'CO': 'Colombia',
+    'CL': 'Chile'
+}
+
+# Modificar el nombre de la columna en el DataFrame
+data_frame.rename(columns={'CODIGO': 'PAIS'}, inplace=True)
+
+# Aplicar el mapeo al DataFrame
+data_frame['PAIS'] = data_frame['PAIS'].map(codigo_a_pais)
+
 #columns to display in the table
-excluded_columns = ['CODIGO', 'Nombre de la iniciativa', 'WEB', 'CONTACTO']
+excluded_columns = ['PAIS', 'Nombre de la iniciativa', 'WEB', 'CONTACTO']
 
 #rest of columns (will be displayed in different dopdowns depending on the column value)
 rest_columns = data_frame.columns[5:]
@@ -70,7 +91,7 @@ app.layout = html.Div([
         id='data-table',
         data=data_frame[excluded_columns].to_dict('records'),
         columns=[
-            {'id': col, 'name': col, 'presentation': 'markdown'} if col in ['WEB', 'CONTACTO'] else {'id': col, 'name': col}
+            {'id': col, 'name': 'PAIS' if col == 'CODIGO' else col, 'presentation': 'markdown'} if col in ['WEB', 'CONTACTO'] else {'id': col, 'name': col}
             for col in excluded_columns
         ],
         style_table={'height': '400px', 'overflowY': 'auto'},
@@ -80,10 +101,6 @@ app.layout = html.Div([
 
         tooltip_data=[
             {
-                'CONTACTO': {
-                    'type': 'text',
-                    'value': row['CONTACTO'] if pd.notna(row['CONTACTO']) else '',
-                },
                 'Nombre de la iniciativa': {
                     'type': 'text',
                     'value': row['Función de la iniciativa'] if pd.notna(row['Función de la iniciativa']) else '',
