@@ -69,6 +69,12 @@ data_frame['WEB'] = data_frame['WEB'].astype(str)
 # Convert 'WEB' column to a link
 data_frame['WEB'] = data_frame['WEB'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
 
+# Set column 'Nombre de la iniciativa' as string
+data_frame['Nombre de la iniciativa'] = data_frame['Nombre de la iniciativa'].astype(str)
+
+# Agregar un icono de información a la columna 'Nombre de la iniciativa'
+data_frame['Nombre de la iniciativa'] = data_frame['Nombre de la iniciativa'].apply(lambda x: f'<i class="fas fa-info-circle" title="{x}"></i>{x}')
+
 app.layout = html.Div([
     
     html.I(className='fas fa-info-circle', style={'font-size': '24px', 'margin-right': '10px'}),
@@ -91,7 +97,7 @@ app.layout = html.Div([
         id='data-table',
         data=data_frame[excluded_columns].to_dict('records'),
         columns=[
-            {'id': col, 'name': 'PAIS' if col == 'CODIGO' else col, 'presentation': 'markdown'} if col in ['WEB', 'CONTACTO'] else {'id': col, 'name': col}
+            {'id': col, 'name': 'PAIS' if col == 'CODIGO' else col, 'presentation': 'markdown'} if col in ['WEB', 'CONTACTO','Nombre de la iniciativa'] else {'id': col, 'name': col}
             for col in excluded_columns
         ],
         style_table={'height': '400px', 'overflowY': 'auto'},
