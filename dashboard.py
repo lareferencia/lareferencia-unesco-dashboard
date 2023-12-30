@@ -21,8 +21,8 @@ codigo_a_pais = {
     'MX': 'Mexico',
     'PA': 'Panama',
     'SV': 'El Salvador',
-    'CO': 'Colombia',
-    'CL': 'Chile'
+    ' CO': 'Colombia',
+    ' CL': 'Chile'
 }
 
 # Modificar el nombre de la columna en el DataFrame
@@ -61,7 +61,7 @@ app = Dash(__name__,external_stylesheets=external_stylesheets)
 data_frame['CONTACTO'] = data_frame['CONTACTO'].astype(str)
 
 #Concat 'Contacto' column with an icon
-data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope"></i>')
+data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope"></i>{x}')
 
 # Set column 'WEB' as string
 data_frame['WEB'] = data_frame['WEB'].astype(str)
@@ -73,7 +73,7 @@ data_frame['WEB'] = data_frame['WEB'].apply(lambda x: f'<a href="{x}" target="_b
 data_frame['Nombre de la iniciativa'] = data_frame['Nombre de la iniciativa'].astype(str)
 
 # Agregar un icono de información a la columna 'Nombre de la iniciativa'
-data_frame['Nombre de la iniciativa'] = data_frame['Nombre de la iniciativa'].apply(lambda x: f'<i class="fas fa-info-circle" title="{x}"></i>{x}')
+data_frame['Nombre de la iniciativa'] = data_frame['Nombre de la iniciativa'].apply(lambda x: f'<i class="fas fa-info-circle" title="{x}"></i>                      {x}')
 
 app.layout = html.Div([
     
@@ -110,6 +110,10 @@ app.layout = html.Div([
                 'Nombre de la iniciativa': {
                     'type': 'text',
                     'value': row['Función de la iniciativa'] if pd.notna(row['Función de la iniciativa']) else '',
+                },
+                'CONTACTO': {
+                    'type': 'text',
+                    'value': row['CONTACTO'].replace('<i class="fas fa-envelope"></i>', '') if pd.notna(row['CONTACTO']) else '',
                 },
             }
             for row in data_frame.to_dict('records')
