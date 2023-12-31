@@ -4,10 +4,6 @@ import pandas as pd
 
 from data import *
 
-#from data import *
-
-
-#create a data frame with the csv
 data_frame = get_all_data()
 
 codigo_a_pais = {
@@ -28,13 +24,10 @@ codigo_a_pais = {
 # Modificar el nombre de la columna en el DataFrame
 data_frame.rename(columns={'CODIGO': 'PAIS'}, inplace=True)
 
-# Aplicar el mapeo al DataFrame
 data_frame['PAIS'] = data_frame['PAIS'].map(codigo_a_pais)
 
-#columns to display in the table
 excluded_columns = ['PAIS', 'Nombre de la iniciativa', 'WEB', 'CONTACTO']
 
-#rest of columns (will be displayed in different dopdowns depending on the column value)
 rest_columns = data_frame.columns[5:]
 
 time_inicial = time.time()
@@ -57,23 +50,18 @@ external_stylesheets = [
 #add the external stylesheets to the app
 app = Dash(__name__,external_stylesheets=external_stylesheets)
 
-#Set column 'Contacto' as string
+
 data_frame['CONTACTO'] = data_frame['CONTACTO'].astype(str)
 
-#Concat 'Contacto' column with an icon
-data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope"></i>{x}')
+data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope" title="{x}></i>')
 
-# Set column 'WEB' as string
 data_frame['WEB'] = data_frame['WEB'].astype(str)
 
-# Convert 'WEB' column to a link
 data_frame['WEB'] = data_frame['WEB'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
 
-# Set column 'Nombre de la iniciativa' as string
 data_frame['Nombre de la iniciativa'] = data_frame['Nombre de la iniciativa'].astype(str)
 
-# Agregar un icono de información a la columna 'Nombre de la iniciativa'
-data_frame['Nombre de la iniciativa'] = data_frame['Nombre de la iniciativa'].apply(lambda x: f'<i class="fas fa-info-circle" title="{x}"></i>                      {x}')
+data_frame['Nombre de la iniciativa'] = data_frame.apply(lambda row: f'<i class="fas fa-info-circle" title="{row["Función de la iniciativa"]}"></i> {row["Nombre de la iniciativa"]}', axis=1)
 
 app.layout = html.Div([
     
@@ -107,14 +95,7 @@ app.layout = html.Div([
 
         tooltip_data=[
             {
-                'Nombre de la iniciativa': {
-                    'type': 'text',
-                    'value': row['Función de la iniciativa'] if pd.notna(row['Función de la iniciativa']) else '',
-                },
-                'CONTACTO': {
-                    'type': 'text',
-                    'value': row['CONTACTO'].replace('<i class="fas fa-envelope"></i>', '') if pd.notna(row['CONTACTO']) else '',
-                },
+                
             }
             for row in data_frame.to_dict('records')
             
