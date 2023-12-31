@@ -50,7 +50,7 @@ external_stylesheets = [
 #add the external stylesheets to the app
 app = Dash(__name__,external_stylesheets=external_stylesheets)
 
-
+#display settings in data_frame
 data_frame['CONTACTO'] = data_frame['CONTACTO'].astype(str)
 
 data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope" title="{x}"></i>')
