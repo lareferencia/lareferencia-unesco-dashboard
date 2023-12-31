@@ -53,7 +53,7 @@ app = Dash(__name__,external_stylesheets=external_stylesheets)
 
 data_frame['CONTACTO'] = data_frame['CONTACTO'].astype(str)
 
-data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope" title="{x}></i>')
+data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope" title="{x}"></i>')
 
 data_frame['WEB'] = data_frame['WEB'].astype(str)
 
