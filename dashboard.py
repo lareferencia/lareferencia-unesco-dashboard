@@ -65,8 +65,7 @@ data_frame['Nombre de la iniciativa'] = data_frame.apply(lambda row: f'<i class=
 
 app.layout = html.Div([
     
-    html.I(className='fas fa-info-circle', style={'font-size': '24px', 'margin-right': '10px'}),
-    html.H1(children='Tabla de Datos', style={'textAlign': 'center'}),
+    html.H1(children='Dashboard recomendaciones UNESCO', style={'textAlign': 'center'}),
 
 
     html.Div([    
@@ -88,6 +87,7 @@ app.layout = html.Div([
             {'id': col, 'name': 'PAIS' if col == 'CODIGO' else col, 'presentation': 'markdown'} if col in ['WEB', 'CONTACTO','Nombre de la iniciativa'] else {'id': col, 'name': col}
             for col in excluded_columns
         ],
+        fixed_rows={'headers': True},
         style_table={'height': '400px', 'overflowY': 'auto'},
         style_cell={'minWidth': '50px', 'maxWidth': '250px', 'textAlign': 'left'},
         style_header={'fontWeight': 'bold', 'backgroundColor': 'lightgrey'},
