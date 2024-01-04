@@ -4,7 +4,9 @@ import pandas as pd
 
 from data import *
 
+#get data
 data_frame = get_all_data()
+
 
 codigo_a_pais = {
     'AR': 'Argentina',
@@ -88,10 +90,12 @@ app.layout = html.Div([
             for col in excluded_columns
         ],
         fixed_rows={'headers': True},
+        page_size=20,
         style_table={'height': '400px', 'overflowY': 'auto'},
         style_cell={'minWidth': '50px', 'maxWidth': '250px', 'textAlign': 'left'},
         style_header={'fontWeight': 'bold', 'backgroundColor': 'lightgrey'},
         markdown_options={"html": True},
+        
 
         tooltip_data=[
             {
@@ -102,17 +106,22 @@ app.layout = html.Div([
         ],
         tooltip_duration=None,
         
+        
         style_data_conditional=[
     {
         'if': {'column_id': 'CONTACTO'},
-        'backgroundColor': '#ECECEC',
         'color': '#24BAC4',
         'cursor': 'pointer',
         'title': 'Test',
     },
+    
+    {
+        'if': {'row_index': 'odd'},
+        'backgroundColor': 'rgb(220, 220, 220)',
+    },
+    
     {
         'if': {'column_id': 'Nombre de la iniciativa'},
-        'backgroundColor': '#ECECEC',
         'color': '#24BAC4',
         'children': [
             html.I(className='fas fa-info-circle'),
