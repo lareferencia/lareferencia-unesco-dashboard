@@ -13,7 +13,7 @@ codigo_a_pais = {
     'BR': 'Brazil',
     'CR': 'Costa Rica',
     'EC': 'Ecuador',
-    'ES': 'Espana',
+    'ES': 'España',
     'UY': 'Uruguay',
     'PE': 'Peru',
     'MX': 'Mexico',
