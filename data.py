@@ -4,18 +4,33 @@ from categories_and_subcategories_protocol import *
 
 import time
 
+import re
+
 #url
 url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/csv%20files/full.csv'
 
+def reemplazar_comillas(cadena):
+    #reemplazar "##" por "&quot;"
+    return re.sub(r'##', '&quot;', cadena)
+
+######################### CURE DATA ######################### 
+def cure_data(data_frame):
+    #cure data
+    data_frame['Función de la iniciativa'] = data_frame['Función de la iniciativa'].apply(lambda x: reemplazar_comillas(x))
+    return data_frame
 
 try:
     #get data from csv skipping first two rows and ignoring last 8 rows
     data_frame = read_csv(url, delimiter=',', encoding='utf-8', skiprows=2,skipfooter=8,engine='python',dtype={'SUBDISCIPLINES': str})
+    #cure data
+    data_frame = cure_data(data_frame)
 except Exception as e:
     print(f"Error loading data: {e}")
     
 def get_all_data():
     return data_frame
+
+
 
 ########################## SET CATEGORIAS ##########################
 def get_categories_set():
