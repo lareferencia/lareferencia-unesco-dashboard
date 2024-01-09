@@ -55,17 +55,21 @@ app = Dash(__name__,external_stylesheets=external_stylesheets)
 #display settings in data_frame
 data_frame['CONTACTO'] = data_frame['CONTACTO'].astype(str)
 
-data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope" title="{x}"></i>')
+#add icon to contact column if different to NO INFO
+data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope" title="{x}"></i>' if x != 'NO INFO' else x)
 
 data_frame['WEB'] = data_frame['WEB'].astype(str)
 
-data_frame['WEB'] = data_frame['WEB'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
+#hiperlink to web column if different to NO INFO
+data_frame['WEB'] = data_frame['WEB'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>' if x != 'NO INFO' else x)
 
 data_frame['Nombre de la iniciativa'] = data_frame['Nombre de la iniciativa'].astype(str)
 
 data_frame['Nombre de la iniciativa'] = data_frame.apply(lambda row: f'<i class="fas fa-info-circle" title="{row["Función de la iniciativa"]}"></i> {row["Nombre de la iniciativa"]}', axis=1)
 
+
 app.layout = html.Div([
+
     
     html.H1(children='Dashboard recomendaciones UNESCO', style={'textAlign': 'center'}),
 

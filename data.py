@@ -9,10 +9,19 @@ import re
 #url
 url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/csv%20files/full.csv'
 
+def cure_data(data_frame):
+    # if NAN in web column, replace with 'NO INFO'
+    data_frame['WEB'] = data_frame['WEB'].fillna('NO INFO')
+    # if web is 'falta web' replace with 'NO INFO'
+    data_frame['WEB'] = data_frame['WEB'].apply(lambda x: 'NO INFO' if x == 'falta web' else x)
+    # if NAN in contact column, replace with 'NO INFO'
+    data_frame['CONTACTO'] = data_frame['CONTACTO'].fillna('NO INFO')
 
 try:
     #get data from csv skipping first two rows and ignoring last 8 rows
     data_frame = read_csv(url, delimiter=',', encoding='utf-8', skiprows=2,skipfooter=8,engine='python',dtype={'SUBDISCIPLINES': str})
+    #cure data
+    cure_data(data_frame)
 except Exception as e:
     print(f"Error loading data: {e}")
     
