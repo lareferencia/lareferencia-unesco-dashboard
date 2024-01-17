@@ -253,3 +253,17 @@ def filter_data(categories):
     
 
     return filtered_rows
+
+####################### Filter data from given data frame exclusive (no additive) ############################
+def filter_data_from_data_frame(categories,data_frame):
+    filtered_rows = data_frame
+
+    for category in categories:
+        filtro = filtered_rows['SUBDISCIPLINES'].apply(lambda x: any(subdisciplina.startswith(category) for subdisciplina in str(x).split(',')))
+
+        # Aplicar el filtro al DataFrame
+        filtered_rows = filtered_rows[filtro]
+    
+    
+
+    return filtered_rows

@@ -46,7 +46,7 @@ subcategory_options = []
 
 # Define font awesome as an external stylesheet
 external_stylesheets = [
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'
 ]
 
 #add the external stylesheets to the app
@@ -65,7 +65,16 @@ data_frame['WEB'] = data_frame['WEB'].apply(lambda x: f'<a href="{x}" target="_b
 
 data_frame['Nombre de la iniciativa'] = data_frame['Nombre de la iniciativa'].astype(str)
 
-data_frame['Nombre de la iniciativa'] = data_frame.apply(lambda row: f'<i class="fas fa-info-circle" title="{row["Función de la iniciativa"]}"></i> {row["Nombre de la iniciativa"]}', axis=1)
+#columna adicional con el tooltip a la celda
+data_frame['Nombre de la iniciativa_tooltip'] = data_frame.apply(
+    lambda row: f'{row["Nombre de la iniciativa"]}: {row["Función de la iniciativa"]}',
+    axis=1
+)
+
+data_frame['Nombre de la iniciativa'] = data_frame.apply(
+    lambda row: f'<i class="fas fa-info-circle"></i> {row["Nombre de la iniciativa"]}', 
+    axis=1
+)
 
 
 app.layout = html.Div([
@@ -81,8 +90,15 @@ app.layout = html.Div([
         placeholder='Seleccione una o varias categorías o subcategorías... ',
         multi=True,
         style={'width': '100%'}  
-    ),], 
-    style={'textAlign': 'center', 'background-color': 'lightgrey', 'display':'flex', 'justify-content':'center'}),
+    ),
+        dcc.Dropdown(
+            id='countries-dropdown',
+            options=[{'label': pais, 'value': pais} for pais in data_frame['PAIS'].unique()],
+            multi=True,
+            placeholder='Seleccione uno o varios países...',
+            style={'background-color':'#cefad0','width': '100%'}
+            )], 
+    style={'textAlign': 'center', 'background-color': 'lightgrey', 'display':'flex', 'justify-content':'center','flex-direction':'column'}),
 
 
 
@@ -94,6 +110,8 @@ app.layout = html.Div([
             for col in excluded_columns
         ],
         fixed_rows={'headers': True},
+        filter_action='native',
+        filter_options={"placeholder_text": "Filtrar..."},     
         page_size=20,
         style_table={'height': '400px', 'overflowY': 'auto'},
         style_cell={'minWidth': '50px', 'maxWidth': '250px', 'textAlign': 'left'},
@@ -101,13 +119,13 @@ app.layout = html.Div([
         markdown_options={"html": True},
         
 
-        tooltip_data=[
-            {
-                
-            }
-            for row in data_frame.to_dict('records')
-            
-        ],
+    tooltip_data=[
+        {
+            col: {'value': str(row['Nombre de la iniciativa_tooltip']), 'type': 'markdown'}
+            for col in excluded_columns if col == 'Nombre de la iniciativa'
+        }
+        for row in data_frame.to_dict('records')
+    ],
         tooltip_duration=None,
         
         
@@ -127,13 +145,11 @@ app.layout = html.Div([
     {
         'if': {'column_id': 'Nombre de la iniciativa'},
         'color': '#24BAC4',
-        'children': [
-            html.I(className='fas fa-info-circle'),
-            html.Span(' ', style={'marginRight': '5px'}),
-            '{Nombre de la iniciativa}',
-        ],
+        'tooltip': {
+            'type':'html'
+        }
     },
-],
+],  
 
     )
 ],style={'padding': '20px'})
@@ -141,30 +157,53 @@ app.layout = html.Div([
 @app.callback(
     [
         Output('data-table', 'data'),
-        Output('column-dropdown', 'options')
+        Output('column-dropdown', 'options'),
+        Output('countries-dropdown', 'options')
     ],
-    [Input('column-dropdown', 'value')]
+    [Input('column-dropdown', 'value'),
+     Input('countries-dropdown', 'value')]
 )
-def update_table(selected_category): 
-    if not selected_category:
+def update_table(selected_category,selected_countries): 
+    #caso en el que no haya filtrado
+    if not selected_category and not selected_countries:
+        print('No hay filtros')
         # Si no se ha seleccionado ninguna columna o se selecciona Todas, muestra todas las filas
-        return data_frame[excluded_columns].to_dict('records'), categories_dropdown
+        return data_frame[excluded_columns].to_dict('records'), categories_dropdown, data_frame['PAIS'].unique()
 
-
-    # Filtrar el dataframe en función de las columnas seleccionadas
-    filtered_df = filter_data(selected_category)
-
+    #caso en el que haya filtrado por paises pero no por categorias
+    if not selected_category and selected_countries:
+        print('Filtrado por paises')
+        filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
+        #nuevas categorias y subcategorias a partir de los datos filtrados
+        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique()
     
+    #caso en el que haya filtrado por categorias pero no por paises
+    if selected_category and not selected_countries:
+        print('Filtrado por categorias')
+        filtered_df = filter_data(selected_category)
+        #nuevas categorias y subcategorias a partir de los datos filtrados
+        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique()
+    
+    #caso en el que haya filtrado por categorias y paises
+    print('Filtrado por categorias y paises')
     time_inicial = time.time()
+    #pasar el filtro de pais antes de filtrar por categorias
+    filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
+    
+    #pasar el filtro de categorias despues de filtrar por paises
+    filtered_df = filter_data_from_data_frame(selected_category,filtered_df)
     
     #nuevas categorias y subcategorias a partir de los datos filtrados
     new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
     
     time_final = time.time()
     time_ejecucion = time_final - time_inicial
-    print('Tiempo de ejecución de get_categories_list_from_data_frame: ',time_ejecucion)
+    print('Tiempo de ejecución de callback: ',time_ejecucion)
+    
 
-    return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown
+    return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique()
 
 
 
