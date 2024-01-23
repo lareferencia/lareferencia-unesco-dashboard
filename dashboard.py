@@ -94,33 +94,56 @@ app.layout = html.Div([
         style={'textAlign': 'center', 'background-color': 'lightgrey', 'display': 'flex',
                'justify-content': 'center', 'flex-direction': 'column'}),
 
-    dag.AgGrid(
-        id='data-table',
-        columnDefs=[
-            {'headerName': 'PAIS' if col == 'CODIGO' else col, 'field': col,
-             'filter':True,
-             'sortable':True if col =='PAIS' else False,
-             'cellRenderer':"ContactoButton" if col == 'CONTACTO' else 
-             "WebButton" if col == 'WEB' else
-             "IniciativaComponent" if col == 'Nombre de la iniciativa' else None,
-             'maxWidth': 100 if col == 'PAIS' else 
-             150 if col == 'WEB' else None,
-             'minWidth': 350 if col == 'Nombre de la iniciativa' else None,
-             }
-            for col in excluded_columns
+        html.Div(
+        style={'display':'flex','width':'100%'},
+        children=[
+            html.Div(
+                style={'width':'100%'},
+                children=[
+                    dag.AgGrid(
+                        id='data-table',
+                        columnDefs=[
+                            {'headerName': 'PAIS' if col == 'CODIGO' else col, 'field': col,
+                             'filter': True,
+                             'sortable': True if col == 'PAIS' else False,
+                             'cellRenderer': "ContactoButton" if col == 'CONTACTO' else
+                             "WebButton" if col == 'WEB' else
+                             "IniciativaComponent" if col == 'Nombre de la iniciativa' else None,
+                             'maxWidth': 100 if col == 'PAIS' else
+                             150 if col == 'WEB' else None,
+                             'minWidth': 350 if col == 'Nombre de la iniciativa' else None,
+                             }
+                            for col in excluded_columns
+                        ],
+                        rowData=data_frame[excluded_columns].to_dict('records'),
+                        className="ag-theme-balham",
+                        columnSize="responsiveSizeToFit",
+                        dashGridOptions={
+                            'pagination': True,
+                            'paginationAutoPageSize': True,
+                        },
+                        defaultColDef={
+                            'resizable': True,
+                        },
+                    ),
+                ],
+            ),
+            html.Div(
+                id='card', 
+                style={'display':'none'},
+                children=[
+                    html.Div(
+                        className="card",
+                        children=[
+                            html.H4("Card Title"),
+                            html.P("Contenido del card..."),
+                        ],
+                        
+                    ),
+                ],
+            ),
         ],
-        rowData=data_frame[excluded_columns].to_dict('records'),
-        className="ag-theme-balham",
-        columnSize="responsiveSizeToFit",
-        dashGridOptions={
-            'pagination': True,
-            'paginationAutoPageSize': True,
-        },
-        defaultColDef={
-            'resizable': True,
-        },
-
-    )
+    ),
 ], style={'padding': '20px'})
 
 @app.callback(
@@ -173,6 +196,38 @@ def update_table(selected_category, selected_countries):
 
     return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique()
 
+
+#callback para el card con la descripcion de la iniciativa
+@app.callback(
+    [
+        Output('card', 'children'),
+        Output('card', 'style')
+    ],
+    [Input('data-table', 'cellClicked')]
+)
+def update_card_info(selected_cell):
+    if selected_cell:
+                # Obtener la información de la celda seleccionada
+        row_index = selected_cell['rowIndex']
+        col_id = selected_cell['colId']
+
+        # Obtener el valor de la celda desde el DataFrame original
+        cell_value = data_frame.iloc[row_index][col_id]
+        
+        # Obtener la función de la iniciativa correspondiente al Nombre de la iniciativa
+        function_of_initiative = data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'Función de la iniciativa'].values[0]
+
+
+        # Llenar el contenido del card con la descripcion de la celda seleccionada
+        card_content = [
+            html.H4(str(cell_value),style={'color': 'white', 'background-color': '#007BFF', 'padding': '10px'}),
+            html.P(function_of_initiative, style={'margin': '10px'}),
+        ]
+
+        return card_content, {'display':'block','width': '25%', 'border': '1px solid #ccc', 'border-radius': '5px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)'}
+    else:
+        return [], {'display': 'none'}  # Ocultar el card
+    
 
 if __name__ == '__main__':
     app.run_server(debug=True)
