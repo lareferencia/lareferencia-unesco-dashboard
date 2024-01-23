@@ -49,67 +49,101 @@ dagcomponentfuncs.ContactoButton = function (props) {
     ? React.createElement(
         "div",
         null,
-        isValidURL(props.value) &&
-          React.createElement(
-            React.Fragment,
-            null,
-            React.createElement("i", {
-              className: "fas fa-link",
-              onClick: handleNavigate,
-              style: {
-                fontSize: "18px",
-                color: "#007BFF",
-                cursor: "pointer",
-                marginRight: "5px",
-              },
-              title: "Ir a la página web de contacto",
-            }),
-            React.createElement("i", {
-              className: "fas fa-copy",
-              onClick: handleCopyToClipboard,
-              style: { fontSize: "18px", color: "#007BFF", cursor: "pointer" },
-              title: "Copiar URL al portapapeles",
-            })
-          ),
-        !isValidURL(props.value) &&
-          React.createElement("i", {
-            className: "fas fa-copy",
-            onClick: handleCopyToClipboard,
-            style: { fontSize: "18px", color: "#007BFF", cursor: "pointer" },
-            title: "Copiar URL al portapapeles",
-          }),
-
-        React.createElement("i", {
-          className: "fas fa-envelope",
-          onClick: handleEmail,
-          style: {
-            fontSize: "18px",
-            color: "#007BFF",
-            cursor: "pointer",
-            marginLeft: "5px",
-          },
-          title: "Enviar correo electrónico",
-        })
+        isValidURL(props.value)
+          ? React.createElement(
+              React.Fragment,
+              null,
+              React.createElement("i", {
+                className: "fas fa-link",
+                onClick: handleNavigate,
+                style: {
+                  fontSize: "18px",
+                  color: "#007BFF",
+                  cursor: "pointer",
+                  marginRight: "5px",
+                },
+                title: "Ir a la página web de contacto",
+              }),
+              React.createElement("i", {
+                className: "fas fa-copy",
+                onClick: handleCopyToClipboard,
+                style: {
+                  fontSize: "18px",
+                  color: "#007BFF",
+                  cursor: "pointer",
+                },
+                title: "Copiar URL al portapapeles",
+              })
+            )
+          : React.createElement(
+              React.Fragment,
+              null,
+              React.createElement("i", {
+                className: "fas fa-envelope",
+                onClick: handleEmail,
+                style: {
+                  fontSize: "18px",
+                  color: "#007BFF",
+                  cursor: "pointer",
+                  marginRight: "5px",
+                },
+                title: "Enviar correo electrónico",
+              }),
+              React.createElement("i", {
+                className: "fas fa-copy",
+                onClick: handleCopyToClipboard,
+                style: {
+                  fontSize: "18px",
+                  color: "#007BFF",
+                  cursor: "pointer",
+                },
+                title: "Copiar URL al portapapeles",
+              })
+            )
       )
-    : React.createElement("i", {
-        className: "fas fa-question-circle",
-        style: {
-          fontSize: "18px",
-          color: "#999",
-          cursor: "not-allowed",
-          marginRight: "5px",
-        },
-        title: "No hay información de contacto",
-      });
+    : React.createElement('div', null, 'No hay información de contacto');
 };
 
 dagcomponentfuncs.WebButton = function (props) {
-  return React.createElement("i", {
-    className: "fas fa-external-link-square-alt",
-    onClick: () => window.open(props.value, "_blank"),
-    style: { fontSize: "18px", color: "#007BFF", cursor: "pointer" },
-    title: "Ir al sitio web",
-  });
+  // Handling the button click event to copy the URL to the clipboard
+  const handleCopyToClipboard = () => {
+    try {
+      // Attempt to copy the URL to the clipboard
+      navigator.clipboard.writeText(props.value);
+      alert("URL copied to clipboard!");
+    } catch (error) {
+      console.error("Unable to copy to clipboard:", error);
+      alert("Failed to copy URL to clipboard.");
+    }
+  };
+
+  return React.createElement(
+    "react-fragment",
+    null,
+
+    React.createElement("i", {
+      className: "fas fa-external-link-square-alt",
+      onClick: () => window.open(props.value, "_blank"),
+      style: {
+        fontSize: "18px",
+        color: "#007BFF",
+        cursor: "pointer",
+        marginRight: "5px",
+      },
+      title: "Ir al sitio web",
+    }),
+
+    React.createElement("i", {
+      className: "fas fa-copy",
+      onClick: handleCopyToClipboard,
+      style: {
+        fontSize: "18px",
+        color: "#007BFF",
+        cursor: "pointer",
+      },
+      title: "Copiar URL al portapapeles",
+    })
+  );
 };
 
 dagcomponentfuncs.IniciativaComponent = function (props) {
@@ -117,9 +151,5 @@ dagcomponentfuncs.IniciativaComponent = function (props) {
     "div",
     { style: { display: "flex", alignItems: "center" } },
     React.createElement("span", null, props.value),
-    React.createElement("i", {
-      className: "fas fa-arrow-right",
-      style: { marginLeft: "5px", cursor: "pointer" },
-    })
   );
 };
