@@ -1,4 +1,4 @@
-from dash import Dash, dcc, html, Input, Output, State
+from dash import Dash, dcc, html, Input, Output, State, ctx
 import dash_ag_grid as dag
 import pandas as pd
 import time
@@ -77,7 +77,6 @@ data_frame['Nombre de la iniciativa_tooltip'] = data_frame.apply(
 
 app.layout = html.Div([
     html.H1(children='Dashboard recomendaciones UNESCO', style={'textAlign': 'center'}),
-    dbc.Button("Open modal", id="open", n_clicks=0),
     html.Div([
         dcc.Dropdown(
             id='column-dropdown',
@@ -123,6 +122,7 @@ app.layout = html.Div([
                         dashGridOptions={
                             'pagination': True,
                             'paginationAutoPageSize': True,
+                            'rowSelection': 'single',
                         },
                         defaultColDef={
                             'resizable': True,
@@ -132,6 +132,7 @@ app.layout = html.Div([
                         [
                             dbc.ModalHeader(id='modal-header'),
                             dbc.ModalBody(id='modal-body'),
+                            dbc.ModalFooter(dbc.Button("Close", id="row-selection-modal-close", className="ml-auto"),style={'display':'none'}),
                         ],
                         id='modal',
                         size='lg',
@@ -195,7 +196,7 @@ def update_table(selected_category, selected_countries):
 
     return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique()
 
-""" #callback para el modal
+#callback para el modal
 @app.callback(
     [
         Output('modal', 'is_open'),
@@ -203,33 +204,30 @@ def update_table(selected_category, selected_countries):
     ],
     [
         Input('data-table', 'cellClicked'),
-        Input('modal', 'is_open'),
+        Input("row-selection-modal-close", "n_clicks"),
     ],
 )
 def update_card_info(selected_cell, is_open):
+    if ctx.triggered_id == "row-selection-modal-close":
+        return False, None
     if  selected_cell and not is_open:
         row_index = selected_cell['rowIndex']
         col_id = selected_cell['colId']
         cell_value = data_frame.iloc[row_index][col_id]
-        function_of_initiative = data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'Función de la iniciativa'].values[0]
+        # Check if cell_value is present in 'Nombre de la iniciativa' column
+        if cell_value in data_frame['Nombre de la iniciativa'].values:
+            function_of_initiative = data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'Función de la iniciativa'].values[0]
 
-        card_content = [
-            html.H4(str(cell_value), style={'color': 'white', 'background-color': '#007BFF', 'padding': '10px'}),
-            html.P(function_of_initiative, style={'margin': '10px'}),
-        ]
+            card_content = [
+                html.H4(str(cell_value), style={'color': 'white', 'background-color': '#007BFF', 'padding': '10px'}),
+                html.P(function_of_initiative, style={'margin': '10px'}),
+            ]
+            return True, card_content
+        else:
+            return False, []
+    return False, []
 
-        return True, card_content
-    return False, [] """
 
-@app.callback(
-    Output("modal", "is_open"),
-    [Input("open", "n_clicks")],
-    [State("modal", "is_open")],
-)
-def toggle_modal(n1, is_open):
-    if n1 :
-        return not is_open
-    return is_open
 
 if __name__ == '__main__':
     app.run_server(debug=True)
