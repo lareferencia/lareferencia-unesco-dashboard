@@ -3,6 +3,7 @@ import dash_ag_grid as dag
 import pandas as pd
 import time
 from data import get_all_data, get_categories_list, get_categories_list_from_data_frame, filter_data, filter_data_from_data_frame
+import dash_bootstrap_components as dbc
 
 # Obtener datos
 data_frame = get_all_data()
@@ -129,6 +130,12 @@ app.layout = html.Div([
                 ],
             ),
             html.Div(
+                id='modal-overlay',
+                style={'display': 'none', 'position': 'fixed', 'top': 0, 'left': 0, 'width': '100%', 'height': '100%',
+                       'background-color': 'rgba(0, 0, 0, 0.7)'},
+            ),
+            
+            html.Div(
                 id='card', 
                 style={'display':'none'},
                 children=[
@@ -201,11 +208,16 @@ def update_table(selected_category, selected_countries):
 @app.callback(
     [
         Output('card', 'children'),
-        Output('card', 'style')
+        Output('card', 'style'),
+        Output('modal-overlay', 'style')
     ],
-    [Input('data-table', 'cellClicked')]
+    [
+        Input('data-table', 'cellClicked'),
+        Input('close-icon', 'n_clicks'),
+        Input('modal-overlay', 'n_clicks'),
+    ]
 )
-def update_card_info(selected_cell):
+def update_card_info(selected_cell, close_icon, modal_overlay):
     if selected_cell:
                 # Obtener la información de la celda seleccionada
         row_index = selected_cell['rowIndex']
@@ -220,14 +232,45 @@ def update_card_info(selected_cell):
 
         # Llenar el contenido del card con la descripcion de la celda seleccionada
         card_content = [
+            html.I(className='fas fa-times', id='close-icon', n_clicks=0, style={'position': 'absolute', 'top': '3px', 'right': '5px',
+                                                                    'font-size': '18px', 'cursor': 'pointer'}),
             html.H4(str(cell_value),style={'color': 'white', 'background-color': '#007BFF', 'padding': '10px'}),
             html.P(function_of_initiative, style={'margin': '10px'}),
         ]
 
-        return card_content, {'display':'block','width': '25%', 'border': '1px solid #ccc', 'border-radius': '5px', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)'}
+        card_style = {
+            'display': 'block',
+            'position': 'fixed',
+            'top': '50%',
+            'left': '50%',
+            'transform': 'translate(-50%, -50%)',
+            'width': '40%',
+            'max-width': '600px',
+            'border': '1px solid #ccc',
+            'border-radius': '5px',
+            'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)',
+            'background-color': 'white',  # Set the background color to white
+        }
+        
+        overlay_style = {
+            'display': 'block', 
+            'position': 'fixed', 
+            'top': 0, 
+            'left': 0, 
+            'width': '100%', 
+            'height': '100%',
+            'background-color': 'rgba(0, 0, 0, 0.7)'
+        }
+        
+    elif close_icon or modal_overlay:
+        card_style = {'display': 'none'}
+        overlay_style = {'display': 'none'}
+        
+        return card_content, card_style, overlay_style
     else:
-        return [], {'display': 'none'}  # Ocultar el card
+        return [], {'display': 'none'}, {'display' : 'none'}  # Ocultar el card
     
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
