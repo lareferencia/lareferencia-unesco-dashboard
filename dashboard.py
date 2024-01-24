@@ -1,4 +1,4 @@
-from dash import Dash, dcc, html, Input, Output
+from dash import Dash, dcc, html, Input, Output, State
 import dash_ag_grid as dag
 import pandas as pd
 import time
@@ -44,6 +44,7 @@ subcategory_options = []
 # Define font awesome as an external stylesheet
 external_stylesheets = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css',
+    dbc.themes.BOOTSTRAP
 ]
 
 # Agregar las hojas de estilo externas a la aplicación
@@ -76,7 +77,7 @@ data_frame['Nombre de la iniciativa_tooltip'] = data_frame.apply(
 
 app.layout = html.Div([
     html.H1(children='Dashboard recomendaciones UNESCO', style={'textAlign': 'center'}),
-
+    dbc.Button("Open modal", id="open", n_clicks=0),
     html.Div([
         dcc.Dropdown(
             id='column-dropdown',
@@ -127,28 +128,19 @@ app.layout = html.Div([
                             'resizable': True,
                         },
                     ),
-                ],
-            ),
-            html.Div(
-                id='modal-overlay',
-                style={'display': 'none', 'position': 'fixed', 'top': 0, 'left': 0, 'width': '100%', 'height': '100%',
-                       'background-color': 'rgba(0, 0, 0, 0.7)'},
-            ),
-            
-            html.Div(
-                id='card', 
-                style={'display':'none'},
-                children=[
-                    html.Div(
-                        className="card",
-                        children=[
-                            html.H4("Card Title"),
-                            html.P("Contenido del card..."),
+                    dbc.Modal(
+                        [
+                            dbc.ModalHeader(id='modal-header'),
+                            dbc.ModalBody(id='modal-body'),
                         ],
-                        
+                        id='modal',
+                        size='lg',
+                        centered=True,
+                        is_open=False,
                     ),
                 ],
-            ),
+            ),            
+
         ],
     ),
 ], style={'padding': '20px'})
@@ -203,74 +195,41 @@ def update_table(selected_category, selected_countries):
 
     return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique()
 
-
-#callback para el card con la descripcion de la iniciativa
+""" #callback para el modal
 @app.callback(
     [
-        Output('card', 'children'),
-        Output('card', 'style'),
-        Output('modal-overlay', 'style')
+        Output('modal', 'is_open'),
+        Output('modal-body', 'children')
     ],
     [
         Input('data-table', 'cellClicked'),
-        Input('close-icon', 'n_clicks'),
-        Input('modal-overlay', 'n_clicks'),
-    ]
+        Input('modal', 'is_open'),
+    ],
 )
-def update_card_info(selected_cell, close_icon, modal_overlay):
-    if selected_cell:
-                # Obtener la información de la celda seleccionada
+def update_card_info(selected_cell, is_open):
+    if  selected_cell and not is_open:
         row_index = selected_cell['rowIndex']
         col_id = selected_cell['colId']
-
-        # Obtener el valor de la celda desde el DataFrame original
         cell_value = data_frame.iloc[row_index][col_id]
-        
-        # Obtener la función de la iniciativa correspondiente al Nombre de la iniciativa
         function_of_initiative = data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'Función de la iniciativa'].values[0]
 
-
-        # Llenar el contenido del card con la descripcion de la celda seleccionada
         card_content = [
-            html.I(className='fas fa-times', id='close-icon', n_clicks=0, style={'position': 'absolute', 'top': '3px', 'right': '5px',
-                                                                    'font-size': '18px', 'cursor': 'pointer'}),
-            html.H4(str(cell_value),style={'color': 'white', 'background-color': '#007BFF', 'padding': '10px'}),
+            html.H4(str(cell_value), style={'color': 'white', 'background-color': '#007BFF', 'padding': '10px'}),
             html.P(function_of_initiative, style={'margin': '10px'}),
         ]
 
-        card_style = {
-            'display': 'block',
-            'position': 'fixed',
-            'top': '50%',
-            'left': '50%',
-            'transform': 'translate(-50%, -50%)',
-            'width': '40%',
-            'max-width': '600px',
-            'border': '1px solid #ccc',
-            'border-radius': '5px',
-            'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)',
-            'background-color': 'white',  # Set the background color to white
-        }
-        
-        overlay_style = {
-            'display': 'block', 
-            'position': 'fixed', 
-            'top': 0, 
-            'left': 0, 
-            'width': '100%', 
-            'height': '100%',
-            'background-color': 'rgba(0, 0, 0, 0.7)'
-        }
-        
-    elif close_icon or modal_overlay:
-        card_style = {'display': 'none'}
-        overlay_style = {'display': 'none'}
-        
-        return card_content, card_style, overlay_style
-    else:
-        return [], {'display': 'none'}, {'display' : 'none'}  # Ocultar el card
-    
+        return True, card_content
+    return False, [] """
 
+@app.callback(
+    Output("modal", "is_open"),
+    [Input("open", "n_clicks")],
+    [State("modal", "is_open")],
+)
+def toggle_modal(n1, is_open):
+    if n1 :
+        return not is_open
+    return is_open
 
 if __name__ == '__main__':
     app.run_server(debug=True)
