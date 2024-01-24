@@ -122,7 +122,6 @@ app.layout = html.Div([
                         dashGridOptions={
                             'pagination': True,
                             'paginationAutoPageSize': True,
-                            'rowSelection': 'single',
                         },
                         defaultColDef={
                             'resizable': True,
@@ -211,13 +210,11 @@ def update_card_info(selected_cell, is_open):
     if ctx.triggered_id == "row-selection-modal-close":
         return False, None
     if  selected_cell and not is_open:
-        row_index = selected_cell['rowIndex']
-        col_id = selected_cell['colId']
-        cell_value = data_frame.iloc[row_index][col_id]
+        cell_value = selected_cell['value']
+        print('Selected cell ', selected_cell)
         # Check if cell_value is present in 'Nombre de la iniciativa' column
         if cell_value in data_frame['Nombre de la iniciativa'].values:
             function_of_initiative = data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'Función de la iniciativa'].values[0]
-
             card_content = [
                 html.H4(str(cell_value), style={'color': 'white', 'background-color': '#007BFF', 'padding': '10px'}),
                 html.P(function_of_initiative, style={'margin': '10px'}),
