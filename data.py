@@ -9,6 +9,21 @@ import re
 #url
 url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/csv%20files/full.csv'
 
+codigo_a_pais = {
+    'AR': 'Argentina',
+    'BR': 'Brazil',
+    'CR': 'Costa Rica',
+    'EC': 'Ecuador',
+    'ES': 'España',
+    'UY': 'Uruguay',
+    'PE': 'Peru',
+    'MX': 'Mexico',
+    'PA': 'Panama',
+    'SV': 'El Salvador',
+    ' CO': 'Colombia',
+    ' CL': 'Chile'
+}
+
 def cure_data(data_frame):
     # if NAN in web column, replace with 'NO INFO'
     data_frame['WEB'] = data_frame['WEB'].fillna('NO INFO')
@@ -16,6 +31,14 @@ def cure_data(data_frame):
     data_frame['WEB'] = data_frame['WEB'].apply(lambda x: 'NO INFO' if x == 'falta web' else x)
     # if NAN in contact column, replace with 'NO INFO'
     data_frame['CONTACTO'] = data_frame['CONTACTO'].fillna('NO INFO')
+    # Modificar el nombre de la columna en el DataFrame
+    data_frame.rename(columns={'CODIGO': 'PAIS'}, inplace=True)
+
+    data_frame['PAIS'] = data_frame['PAIS'].map(codigo_a_pais)
+    
+    # Agregar la columna 'Detalles' con el mismo valor que la columna 'Nombre de la iniciativa'
+    data_frame['Detalles'] = data_frame['Nombre de la iniciativa']
+    
 
 try:
     #get data from csv skipping first two rows and ignoring last 8 rows

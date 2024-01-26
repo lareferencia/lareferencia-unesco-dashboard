@@ -5,43 +5,24 @@ import time
 from data import get_all_data, get_categories_list, get_categories_list_from_data_frame, filter_data, filter_data_from_data_frame
 import dash_bootstrap_components as dbc
 
-# Obtener datos
+# Obtener datos desde la capa de datos
 data_frame = get_all_data()
 
-codigo_a_pais = {
-    'AR': 'Argentina',
-    'BR': 'Brazil',
-    'CR': 'Costa Rica',
-    'EC': 'Ecuador',
-    'ES': 'España',
-    'UY': 'Uruguay',
-    'PE': 'Peru',
-    'MX': 'Mexico',
-    'PA': 'Panama',
-    'SV': 'El Salvador',
-    ' CO': 'Colombia',
-    ' CL': 'Chile'
-}
-
-# Modificar el nombre de la columna en el DataFrame
-data_frame.rename(columns={'CODIGO': 'PAIS'}, inplace=True)
-
-data_frame['PAIS'] = data_frame['PAIS'].map(codigo_a_pais)
-
-excluded_columns = ['PAIS', 'Nombre de la iniciativa', 'WEB', 'CONTACTO']
+#Seleccionar columnas a mostrar en el grid
+excluded_columns = ['PAIS', 'Nombre de la iniciativa','Detalles', 'WEB', 'CONTACTO']
 
 time_inicial = time.time()
 
+#obtener categorias desde la capa de datos y medir el tiempo de consulta
 categories_dropdown = get_categories_list()
 
 time_final = time.time()
 time_ejecucion = time_final - time_inicial
 print('Tiempo de ejecución de get_categories_list: ', time_ejecucion)
 
-# dropdown options for subcategory
-subcategory_options = []
 
-# Define font awesome as an external stylesheet
+
+# Define font awesome y los temas de bootstrap como hojas de estilo externas usadas en la aplicación
 external_stylesheets = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css',
     dbc.themes.BOOTSTRAP
@@ -50,30 +31,7 @@ external_stylesheets = [
 # Agregar las hojas de estilo externas a la aplicación
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
-# Ajustar el tipo de dato de la columna 'CONTACTO'
-data_frame['CONTACTO'] = data_frame['CONTACTO'].astype(str)
 
-# Agregar ícono a la columna de contacto si es diferente de NO INFO
-#data_frame['CONTACTO'] = data_frame['CONTACTO'].apply(lambda x: f'<i class="fas fa-envelope" title="{x}"></i>' if x != 'NO INFO' else x)
-
-# Ajustar el tipo de dato de la columna 'WEB'
-data_frame['WEB'] = data_frame['WEB'].astype(str)
-
-# Hipervínculo a la columna web si es diferente de NO INFO
-#data_frame['WEB'] = data_frame['WEB'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>' if x != 'NO INFO' else x)
-
-data_frame['Nombre de la iniciativa'] = data_frame['Nombre de la iniciativa'].astype(str)
-
-# Columna adicional con el tooltip a la celda
-data_frame['Nombre de la iniciativa_tooltip'] = data_frame.apply(
-    lambda row: f'{row["Nombre de la iniciativa"]}: {row["Función de la iniciativa"]}',
-    axis=1
-)
-
-""" data_frame['Nombre de la iniciativa'] = data_frame.apply(
-    lambda row: f'<i class="fas fa-info-circle"></i> {row["Nombre de la iniciativa"]}',
-    axis=1
-) """
 
 app.layout = html.Div([
     html.H1(children='Dashboard recomendaciones UNESCO', style={'textAlign': 'center'}),
