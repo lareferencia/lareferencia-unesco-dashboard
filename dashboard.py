@@ -54,51 +54,47 @@ app.layout = html.Div([
                'justify-content': 'center', 'flex-direction': 'column'}),
 
         html.Div(
-        style={'display':'flex','width':'100%'},
+        style={'display':'flex'},
         children=[
-            html.Div(
-                style={'width':'100%'},
-                children=[
-                    dag.AgGrid(
-                        id='data-table',
-                        columnDefs=[
-                            {'headerName': 'PAIS' if col == 'CODIGO' else col, 'field': col,
-                             'filter': True,
-                             'sortable': True if col == 'PAIS' else False,
-                             'cellRenderer': "ContactoButton" if col == 'CONTACTO' else
-                             "WebButton" if col == 'WEB' else
-                             "IniciativaComponent" if col == 'Nombre de la iniciativa' else None,
-                             'maxWidth': 100 if col == 'PAIS' else
-                             150 if col == 'WEB' else None,
-                             'minWidth': 350 if col == 'Nombre de la iniciativa' else None,
-                             }
-                            for col in excluded_columns
-                        ],
-                        rowData=data_frame[excluded_columns].to_dict('records'),
-                        className="ag-theme-balham",
-                        columnSize="responsiveSizeToFit",
-                        dashGridOptions={
-                            'pagination': True,
-                            'paginationAutoPageSize': True,
-                        },
-                        defaultColDef={
-                            'resizable': True,
-                        },
-                    ),
-                    dbc.Modal(
-                        [
-                            dbc.ModalHeader(id='modal-header'),
-                            dbc.ModalBody(id='modal-body'),
-                            dbc.ModalFooter(dbc.Button("Close", id="row-selection-modal-close", className="ml-auto"),style={'display':'none'}),
-                        ],
-                        id='modal',
-                        size='lg',
-                        centered=True,
-                        is_open=False,
-                    ),
-                ],
-            ),            
 
+            dag.AgGrid(
+                id='data-table',
+                columnDefs=[
+                    {'headerName': 'PAIS' if col == 'CODIGO' else col, 'field': col,
+                        'filter': True,
+                        'sortable': True if col == 'PAIS' else False,
+                        'cellRenderer': "ContactoButton" if col == 'CONTACTO' else
+                        "WebButton" if col == 'WEB' else
+                        "IniciativaComponent" if col == 'Nombre de la iniciativa' else 
+                        "DetallesComponent" if col == 'Detalles' else None,
+                        'maxWidth': 100 if col in ['PAIS','Detalles'] else
+                        150 if col == 'WEB' else None,
+                        'minWidth': 750 if col == 'Nombre de la iniciativa' else None,
+                        }
+                    for col in excluded_columns
+                ],
+                rowData=data_frame[excluded_columns].to_dict('records'),
+                className="ag-theme-balham",
+                columnSize='responsiveSizeToFit',
+                dashGridOptions={
+                    'pagination': True,
+                    'paginationAutoPageSize': True,
+                },
+                defaultColDef={
+                    'resizable': True,
+                },
+            ),
+            dbc.Modal(
+                [
+                    dbc.ModalHeader(id='modal-header'),
+                    dbc.ModalBody(id='modal-body'),
+                    dbc.ModalFooter(dbc.Button("Close", id="row-selection-modal-close", className="ml-auto"),style={'display':'none'}),
+                ],
+                id='modal',
+                size='lg',
+                centered=True,
+                is_open=False,
+            ),
         ],
     ),
 ], style={'padding': '20px'})

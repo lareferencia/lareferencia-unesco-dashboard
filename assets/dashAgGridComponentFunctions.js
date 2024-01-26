@@ -153,3 +153,29 @@ dagcomponentfuncs.IniciativaComponent = function (props) {
     React.createElement("span", null, props.value),
   );
 };
+
+dagcomponentfuncs.DetallesComponent = function (props) {
+  return React.createElement(
+    'div', // Contenedor
+    {
+      style: {
+        display: "flex",
+        justifyContent: "center", // Centrar horizontalmente
+        alignItems: "center", // Centrar verticalmente
+        height: "100%", // Establecer la altura del contenedor
+      }
+    },
+    React.createElement(
+      'i',
+      {
+        className: "fas fa-eye",
+        style: {
+          fontSize: "18px",
+          color: "#007BFF",
+          cursor: "pointer",
+        },
+        title: "Ver más detalles",
+      }
+    )
+  );
+}
