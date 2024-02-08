@@ -31,7 +31,7 @@ external_stylesheets = [
 # Agregar las hojas de estilo externas a la aplicación
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
-
+temas= ['ag-theme-quartz','ag-theme-quartz-dark','ag-theme-quartz-auto-dark','ag-theme-alpine','ag-theme-alpine-dark','ag-theme-alpine-auto-dark','ag-theme-balham','ag-theme-balham-dark','ag-theme-balham-auto-dark','ag-theme-material']
 
 app.layout = html.Div([
     html.H1(children='Dashboard recomendaciones UNESCO', style={'textAlign': 'center'}),
@@ -49,7 +49,14 @@ app.layout = html.Div([
             multi=True,
             placeholder='Seleccione uno o varios países...',
             style={'background-color': '#cefad0', 'width': '100%'}
-        )],
+        ),
+        
+        dcc.Dropdown(
+            id='theme-dropdown',
+            options=[{'label': tema, 'value': tema} for tema in temas],
+            placeholder='Seleccione un tema...',
+            style={'width': '50%'}
+            )],
         style={'textAlign': 'center', 'background-color': 'lightgrey', 'display': 'flex',
                'justify-content': 'center', 'flex-direction': 'column'}),
 
@@ -181,6 +188,15 @@ def update_card_info(selected_cell, is_open):
             return False, []
     return False, []
 
+
+#callback para cambiar el tema del grid
+@app.callback(
+    Output('data-table', 'className'),
+    [Input('theme-dropdown', 'value')],
+    prevent_initial_call=True
+)
+def change_theme(theme):
+    return theme
 
 
 if __name__ == '__main__':
