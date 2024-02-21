@@ -67,7 +67,7 @@ app.layout = html.Div([
                                     'Web' if col == 'WEB' else 
                                     'Contacto' if col == 'CONTACTO' else col,
                         'field': col,
-                        'filter': True,
+                        'filter': True if col in ['PAIS','Nombre de la iniciativa'] else None,
                         'sortable': True if col == 'PAIS' else False,
                         'cellRenderer': "ContactoButton" if col == 'CONTACTO' else
                         "WebButton" if col == 'WEB' else
@@ -87,6 +87,9 @@ app.layout = html.Div([
                 dashGridOptions={
                     'pagination': True,
                     'paginationAutoPageSize': True,
+                     "icons": {
+                        'menu': '<i class="fa fa-search" aria-hidden="true"></i>',
+                    }
                 },
                 defaultColDef={
                     'resizable': True,
