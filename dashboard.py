@@ -54,7 +54,7 @@ app.layout = html.Div([
     ], style={'flex': '1'}),
 
         ],
-        style={ 'background-color': 'lightgrey', 'display': 'flex'}),
+        style={ 'background-color': '#CFD8DC', 'display': 'flex'}),
 
         html.Div(
         style={'display':'flex'},
@@ -101,7 +101,8 @@ app.layout = html.Div([
                     "style": {"backgroundColor": "#CFD8DC"},
                 },
             ]
-}
+            },
+            style={'height': '800px'}
             ),
             dbc.Modal(
                 [
