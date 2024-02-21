@@ -31,8 +31,6 @@ external_stylesheets = [
 # Agregar las hojas de estilo externas a la aplicación
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
-temas= ['ag-theme-quartz','ag-theme-quartz-dark','ag-theme-quartz-auto-dark','ag-theme-alpine','ag-theme-alpine-dark','ag-theme-alpine-auto-dark','ag-theme-balham','ag-theme-balham-dark','ag-theme-balham-auto-dark','ag-theme-material']
-
 app.layout = html.Div([
     html.H1(children='Dashboard recomendaciones UNESCO', style={'textAlign': 'center'}),
     html.Div([
@@ -65,7 +63,10 @@ app.layout = html.Div([
             dag.AgGrid(
                 id='data-table',
                 columnDefs=[
-                    {'headerName': 'PAIS' if col == 'CODIGO' else col, 'field': col,
+                    {'headerName': 'País' if col == 'PAIS' else 
+                                    'Web' if col == 'WEB' else 
+                                    'Contacto' if col == 'CONTACTO' else col,
+                        'field': col,
                         'filter': True,
                         'sortable': True if col == 'PAIS' else False,
                         'cellRenderer': "ContactoButton" if col == 'CONTACTO' else
