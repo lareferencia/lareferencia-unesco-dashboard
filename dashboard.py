@@ -36,29 +36,27 @@ temas= ['ag-theme-quartz','ag-theme-quartz-dark','ag-theme-quartz-auto-dark','ag
 app.layout = html.Div([
     html.H1(children='Dashboard recomendaciones UNESCO', style={'textAlign': 'center'}),
     html.Div([
-        dcc.Dropdown(
-            id='column-dropdown',
-            options=categories_dropdown,
-            placeholder='Seleccione una o varias categorías o subcategorías... ',
-            multi=True,
-            style={'width': '100%'}
-        ),
+    html.Div([    
         dcc.Dropdown(
             id='countries-dropdown',
             options=[{'label': pais, 'value': pais} for pais in data_frame['PAIS'].unique()],
             multi=True,
-            placeholder='Seleccione uno o varios países...',
-            style={'background-color': '#cefad0', 'width': '100%'}
+            placeholder='Seleccione un país...',
+            style={'width': '100%'}
         ),
-        
+    ], style={'width': '30%'}),
+    html.Div([
         dcc.Dropdown(
-            id='theme-dropdown',
-            options=[{'label': tema, 'value': tema} for tema in temas],
-            placeholder='Seleccione un tema...',
-            style={'width': '50%'}
-            )],
-        style={'textAlign': 'center', 'background-color': 'lightgrey', 'display': 'flex',
-               'justify-content': 'center', 'flex-direction': 'column'}),
+            id='column-dropdown',
+            options=categories_dropdown,
+            placeholder='Seleccione una o varias categorías o subcategorías...',
+            multi=True,
+            style={'width': '100%'}
+        ),
+    ], style={'flex': '1'}),
+
+        ],
+        style={ 'background-color': 'lightgrey', 'display': 'flex'}),
 
         html.Div(
         style={'display':'flex'},
@@ -81,7 +79,7 @@ app.layout = html.Div([
                     for col in excluded_columns
                 ],
                 rowData=data_frame[excluded_columns].to_dict('records'),
-                className="ag-theme-balham",
+                className="ag-theme-material",
                 columnSize='responsiveSizeToFit',
                 dashGridOptions={
                     'pagination': True,
@@ -189,14 +187,7 @@ def update_card_info(selected_cell, is_open):
     return False, []
 
 
-#callback para cambiar el tema del grid
-@app.callback(
-    Output('data-table', 'className'),
-    [Input('theme-dropdown', 'value')],
-    prevent_initial_call=True
-)
-def change_theme(theme):
-    return theme
+
 
 
 if __name__ == '__main__':
