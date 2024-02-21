@@ -91,6 +91,14 @@ app.layout = html.Div([
                 defaultColDef={
                     'resizable': True,
                 },
+                getRowStyle = {
+                "styleConditions": [
+                    {
+                    "condition": "params.rowIndex % 2 === 0",
+                    "style": {"backgroundColor": "#CFD8DC"},
+                },
+            ]
+}
             ),
             dbc.Modal(
                 [
