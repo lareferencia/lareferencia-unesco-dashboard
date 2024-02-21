@@ -149,7 +149,9 @@ dagcomponentfuncs.WebButton = function (props) {
 dagcomponentfuncs.IniciativaComponent = function (props) {
   return React.createElement(
     "div",
-    { style: { display: "flex", alignItems: "center",cursor:"pointer" } },
+    { style: { display: "flex", alignItems: "center",cursor:"pointer" } ,
+    title : "Ver más detalles"},
+    
     React.createElement("span", null, props.value),
   );
 };
