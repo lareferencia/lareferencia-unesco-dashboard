@@ -73,9 +73,11 @@ app.layout = html.Div([
                         "WebButton" if col == 'WEB' else
                         "IniciativaComponent" if col == 'Nombre de la iniciativa' else 
                         "DetallesComponent" if col == 'Detalles' else None,
-                        'maxWidth': 100 if col in ['PAIS','Detalles'] else
-                        150 if col == 'WEB' else None,
-                        'minWidth': 750 if col == 'Nombre de la iniciativa' else None,
+                        'maxWidth': 120 if col =='Detalles' else 
+                                    100 if col == 'WEB' else None,
+                        'minWidth': 750 if col == 'Nombre de la iniciativa' else 
+                                    125 if col == 'PAIS' else 
+                                    120 if col == 'Detalles' else None,
                         }
                     for col in excluded_columns
                 ],
