@@ -102,6 +102,7 @@ app.layout = html.Div([
                 is_open=False,
             ),
         ],
+    className='header1'
     ),
 ], style={'padding': '20px'})
 
