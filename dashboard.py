@@ -193,10 +193,19 @@ def update_card_info(selected_cell, is_open):
             card_content = [
                 html.H4(str(cell_value), style={'color': 'white', 'background-color': '#007BFF', 'padding': '10px'}),
                 html.P(function_of_initiative, style={'margin': '10px'}),
-                html.P('País: ' + str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'PAIS'].values[0]), style={'margin': '10px'}),
-                html.P('Web: ' + str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'WEB'].values[0]), style={'margin': '10px'}),
-                html.P('Contacto: ' + str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'CONTACTO'].values[0]), style={'margin': '10px'}),
-            ]
+                html.Hr(),
+                html.Div([
+                    html.Strong('País: '),
+                    html.Span(str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'PAIS'].values[0]))
+                ], style={'margin': '10px'}),
+                html.Div([
+                    html.Strong('Web: '),
+                    html.Span(str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'WEB'].values[0]))
+                ], style={'margin': '10px'}),
+                html.Div([
+                    html.Strong('Contacto: '),
+                    html.Span(str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'CONTACTO'].values[0]))
+                ], style={'margin': '10px'})]
             return True, card_content
         else:
             return False, []
