@@ -101,7 +101,16 @@ dagcomponentfuncs.ContactoButton = function (props) {
               })
             )
       )
-    : React.createElement('div', null, 'No hay información de contacto');
+    : React.createElement("i", {
+        className: "fas fa-exclamation-triangle",
+        onClick: handleCopyToClipboard,
+        style: {
+          fontSize: "18px",
+          color: "#007BFF",
+          cursor: "pointer",
+        },
+        title: "No hay información de contacto",
+      });
 };
 
 dagcomponentfuncs.WebButton = function (props) {
@@ -149,35 +158,34 @@ dagcomponentfuncs.WebButton = function (props) {
 dagcomponentfuncs.IniciativaComponent = function (props) {
   return React.createElement(
     "div",
-    { style: { display: "flex", alignItems: "center",cursor:"pointer" } ,
-    title : "Ver más detalles"},
-    
-    React.createElement("span", null, props.value),
+    {
+      style: { display: "flex", alignItems: "center", cursor: "pointer" },
+      title: "Ver más detalles",
+    },
+
+    React.createElement("span", null, props.value)
   );
 };
 
 dagcomponentfuncs.DetallesComponent = function (props) {
   return React.createElement(
-    'div', // Contenedor
+    "div", // Contenedor
     {
       style: {
         display: "flex",
         justifyContent: "center", // Centrar horizontalmente
         alignItems: "center", // Centrar verticalmente
         height: "100%", // Establecer la altura del contenedor
-      }
+      },
     },
-    React.createElement(
-      'i',
-      {
-        className: "fas fa-eye",
-        style: {
-          fontSize: "18px",
-          color: "#007BFF",
-          cursor: "pointer",
-        },
-        title: "Ver más detalles",
-      }
-    )
+    React.createElement("i", {
+      className: "fas fa-eye",
+      style: {
+        fontSize: "18px",
+        color: "#007BFF",
+        cursor: "pointer",
+      },
+      title: "Ver más detalles",
+    })
   );
-}
+};
