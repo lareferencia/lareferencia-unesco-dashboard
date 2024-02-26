@@ -32,7 +32,6 @@ external_stylesheets = [
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = html.Div([
-    html.H1(children='Dashboard recomendaciones UNESCO', style={'textAlign': 'center'}),
     html.Div([
     html.Div([    
         dcc.Dropdown(
