@@ -39,6 +39,11 @@ dagcomponentfuncs.ContactoButton = function (props) {
     }
   };
 
+  // Handling the button click event to copy the URL to the clipboard
+  const handleCopyToClipboardNoInfo = () => {
+    alert("No URL available to copy to clipboard for this contact for now.");
+  };
+
   // Handling the button click event to open the default email client
   const handleEmail = () => {
     window.location.href = `mailto:${props.value}`;
@@ -103,7 +108,7 @@ dagcomponentfuncs.ContactoButton = function (props) {
       )
     : React.createElement("i", {
         className: "fas fa-exclamation-triangle",
-        onClick: handleCopyToClipboard,
+        onClick: handleCopyToClipboardNoInfo,
         style: {
           fontSize: "18px",
           color: "#007BFF",
