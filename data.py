@@ -6,8 +6,10 @@ import time
 
 import re
 
+import traceback
+
 #url
-url = 'https://github.com/lareferencia/lareferencia-unesco-dashboard/blob/main/csv%20files/full.csv'
+url = 'https://raw.githubusercontent.com/lareferencia/lareferencia-unesco-dashboard/main/csv%20files/full.csv'
 
 codigo_a_pais = {
     'AR': 'Argentina',
@@ -47,6 +49,7 @@ try:
     cure_data(data_frame)
 except Exception as e:
     print(f"Error loading data: {e}")
+    #print(traceback.format_exc())
     
 def get_all_data():
     return data_frame
