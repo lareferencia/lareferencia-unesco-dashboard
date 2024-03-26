@@ -7,7 +7,7 @@ import time
 import re
 
 #url
-url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/csv%20files/full.csv'
+url = 'https://github.com/lareferencia/lareferencia-unesco-dashboard/blob/main/csv%20files/full.csv'
 
 codigo_a_pais = {
     'AR': 'Argentina',
