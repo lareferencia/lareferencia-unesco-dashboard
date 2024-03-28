@@ -1,10 +1,10 @@
 from pandas import read_csv, concat, notna
 
 #categories_url
-categories_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/csv%20files/Categories.csv'
+categories_url = 'https://raw.githubusercontent.com/lareferencia/lareferencia-unesco-dashboard/main/csv%20files/Categories.csv'
 
 #subcategories url
-subcategories_url = 'https://raw.githubusercontent.com/Keynell272/Prueba/Andres_developement/csv%20files/Subcategories.csv'
+subcategories_url = 'https://raw.githubusercontent.com/lareferencia/lareferencia-unesco-dashboard/main/csv%20files/Subcategories.csv'
 
 def get_categories():
     try:
