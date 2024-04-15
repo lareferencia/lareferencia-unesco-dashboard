@@ -1,0 +1,12 @@
+{
+  "country": "País",
+  "iniciative": "Nombre de la iniciativa",
+  "details": "Detalles",
+  "contact": "Contacto",
+  "email": "Correo electronico",
+  "web": "Página Web",
+  "Select_a_country": "Selecciona un país",
+  "Select_a_category": "Selecciona una o más categorías o subcategorías",
+  "Select_a_language": "Selecciona un idioma",
+  "Select_an_UNESCO_objective": "Selecciona un objetivo de la UNESCO"
+}

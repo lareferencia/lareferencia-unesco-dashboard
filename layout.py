@@ -2,19 +2,40 @@ from dash import html,dcc
 import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
+from translate.translate import translate
 
 #Seleccionar columnas a mostrar en el grid
 excluded_columns = ['PAIS', 'Nombre de la iniciativa','Detalles', 'WEB', 'CONTACTO']
 
+#set language
+lang = 'en'
+
+#get language
+def get_language():
+    return lang
+#set language
+def set_language(l):
+    global lang
+    lang = l
+
 def getLayout(categories_dropdown,data_frame,unesco_options):
     layout = html.Div([
+        html.Meta(charSet='utf-8'),
+        html.Div(
+                style={'width':'30%'},
+                children=[
+                            dcc.Dropdown(
+                                id='language-dropdown',
+                                options=[{'label': 'English', 'value': 'en'},{'label': 'Español', 'value': 'es'}],
+                                placeholder=translate(lang,'Select_a_language'),
+                                multi=False,)]),
         html.Div([
         html.Div([    
             dcc.Dropdown(
                 id='countries-dropdown',
                 options=[{'label': pais, 'value': pais} for pais in data_frame['PAIS'].unique()],
                 multi=True,
-                placeholder='Seleccione un país...',
+                placeholder=translate(lang,u'Select_a_country'),
                 style={'width': '100%'}
             ),
         ], style={'width': '30%'}),
@@ -22,7 +43,7 @@ def getLayout(categories_dropdown,data_frame,unesco_options):
             dcc.Dropdown(
                 id='column-dropdown',
                 options=categories_dropdown,
-                placeholder='Seleccione una o varias categorías o subcategorías...',
+                placeholder=translate(lang,'Select_a_category'),
                 multi=True,
                 style={'width': '100%'}
             ),
@@ -36,7 +57,7 @@ def getLayout(categories_dropdown,data_frame,unesco_options):
                             dcc.Dropdown(
                                 id='objetivos-dropdown',
                                 options=unesco_options,
-                                placeholder='Seleccione un objetivo UNESCO',
+                                placeholder=translate(lang,'Select_an_UNESCO_objective'),
                                 multi=True,)]),
             html.Div(
             style={'display':'flex'},
