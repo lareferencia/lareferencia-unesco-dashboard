@@ -1,4 +1,4 @@
-from dash import Dash, Input, Output, ctx
+from dash import Dash, Input, Output, ctx, html
 import time
 from data import *
 import dash_bootstrap_components as dbc
@@ -8,8 +8,7 @@ from layout import getLayout
 # Obtener datos desde la capa de datos
 data_frame = get_all_data()
 
-#Seleccionar columnas a mostrar en el grid
-excluded_columns = ['PAIS', 'Nombre de la iniciativa','Detalles', 'WEB', 'CONTACTO']
+
 
 time_inicial = time.time()
 
@@ -34,57 +33,27 @@ external_stylesheets = [
 # Agregar las hojas de estilo externas a la aplicación
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
-app.layout = getLayout(categories_dropdown,excluded_columns,data_frame,unesco_options)
+app.layout = getLayout(categories_dropdown,data_frame,unesco_options)
 
 @app.callback(
     [
         Output('data-table', 'rowData'),
         Output('column-dropdown', 'options'),
-        Output('countries-dropdown', 'options')
+        Output('countries-dropdown', 'options'),
+        Output('objetivos-dropdown', 'options')
     ],
     [Input('column-dropdown', 'value'),
-     Input('countries-dropdown', 'value')]
+     Input('countries-dropdown', 'value'),
+     Input('objetivos-dropdown', 'value')]
 )
-def update_table(selected_category, selected_countries):
-    # caso en el que no haya filtrado
-    if not selected_category and not selected_countries:
-        print('No hay filtros')
-        # Si no se ha seleccionado ninguna columna o se selecciona Todas, muestra todas las filas
-        return data_frame[excluded_columns].to_dict('records'), categories_dropdown, data_frame['PAIS'].unique()
-
-    # caso en el que haya filtrado por paises pero no por categorias
-    if not selected_category and selected_countries:
-        print('Filtrado por paises')
-        filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
-        # nuevas categorias y subcategorias a partir de los datos filtrados
-        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
-        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique()
-
-    # caso en el que haya filtrado por categorias pero no por paises
-    if selected_category and not selected_countries:
-        print('Filtrado por categorias')
-        filtered_df = filter_data(selected_category)
-        # nuevas categorias y subcategorias a partir de los datos filtrados
-        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
-        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique()
-
-    # caso en el que haya filtrado por categorias y paises
-    print('Filtrado por categorias y paises')
+def callback_update_table(selected_category, selected_countries, selected_objetivos_unesco):
+    # estimar el tiempo de ejecución de la función
     time_inicial = time.time()
-    # pasar el filtro de pais antes de filtrar por categorias
-    filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
-
-    # pasar el filtro de categorias despues de filtrar por paises
-    filtered_df = filter_data_from_data_frame(selected_category, filtered_df)
-
-    # nuevas categorias y subcategorias a partir de los datos filtrados
-    new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
-
+    Output = update_table(selected_category, selected_countries, selected_objetivos_unesco)
     time_final = time.time()
     time_ejecucion = time_final - time_inicial
-    print('Tiempo de ejecución de callback: ', time_ejecucion)
-
-    return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique()
+    print('Tiempo de ejecución de update_table: ', time_ejecucion)
+    return Output
 
 #callback para el modal
 @app.callback(

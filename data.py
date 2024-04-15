@@ -11,6 +11,8 @@ url = 'https://raw.githubusercontent.com/lareferencia/lareferencia-unesco-dashbo
 #load codigo_a_pais from csv
 codigo_a_pais = read_csv('https://raw.githubusercontent.com/lareferencia/lareferencia-unesco-dashboard/main/csv%20files/codigo_a_pais.csv')
 
+#Seleccionar columnas a mostrar en el grid
+excluded_columns = ['PAIS', 'Nombre de la iniciativa','Detalles', 'WEB', 'CONTACTO']
 
 def cure_data(data_frame):
     # if NAN in web column, replace with 'NO INFO'
@@ -199,25 +201,35 @@ def get_categories_list_from_data_frame(data_frame):
     categories_list = []
     if categories_codes is not None:
         for code in categories_codes:
-            #create label with name and count
-            label = f'{get_category_by_code(code)} ({get_category_count_filtered(code,data_frame)})'
-            #append dictionary to the list of dictionaries
-            categories_list.append({'label': label, 'value': code})
-            #get subcategories for each category
-            subcategories = get_subcategories_by_category_code(code)
-            for subcategory in subcategories:
-                #check if subcategory code is in the subcategories codes list
-                code_subcategory = get_code_by_subcategory(subcategory)
-                if code_subcategory in subcategories_codes:
-                    #create label with name and count
-                    label = f'..... {subcategory} ({get_subcategory_count_filtered(code_subcategory,data_frame)})'
-                    #label = f'..... {subcategory} '
-                    #append dictionary to the list of dictionaries
-                    categories_list.append({'label': label, 'value': code_subcategory})
+            if code != '07':
+                #create label with name and count
+                label = f'{get_category_by_code(code)} ({get_category_count_filtered(code,data_frame)})'
+                #append dictionary to the list of dictionaries
+                categories_list.append({'label': label, 'value': code})
+                #get subcategories for each category
+                subcategories = get_subcategories_by_category_code(code)
+                for subcategory in subcategories:
+                    #check if subcategory code is in the subcategories codes list
+                    code_subcategory = get_code_by_subcategory(subcategory)
+                    if code_subcategory in subcategories_codes:
+                        #create label with name and count
+                        label = f'..... {subcategory} ({get_subcategory_count_filtered(code_subcategory,data_frame)})'
+                        #label = f'..... {subcategory} '
+                        #append dictionary to the list of dictionaries
+                        categories_list.append({'label': label, 'value': code_subcategory})
         return categories_list
     else:
         return []
 
+########################## just Objetivos unesco with subcategories FROM GIVEN DATA FRAME ##########################
+def get_categories_list_objetivos_unesco_from_data_frame(data_frame):
+    subcategories = get_subcategories_by_category_code('07')
+    subcategories_list = []
+    for subcategory in subcategories:
+        code_subcategory = get_code_by_subcategory(subcategory)
+        label = f'{subcategory} ({get_subcategory_count_filtered(code_subcategory,data_frame)})'
+        subcategories_list.append({'label': label, 'value': code_subcategory})
+    return subcategories_list
 
 ###################### get count for category ######################
 def get_category_count(category):
@@ -293,3 +305,89 @@ def filter_data_from_data_frame(categories,data_frame):
 
     return filtered_rows
 
+def update_table(selected_category,selected_countries,selected_unesco_cat):
+    # case: no filters at all
+    if not selected_category and not selected_countries and not selected_unesco_cat:
+        print('No filters')
+        new_categories_dropdown = get_categories_list()
+        new_categories_dropdown_unesco = get_categories_list_objetivos_unesco()
+        new_countries_dropdown = data_frame['PAIS'].unique()
+        return data_frame[excluded_columns].to_dict('records'), new_categories_dropdown, new_countries_dropdown, new_categories_dropdown_unesco
+    
+    # case: filter by countries but not by categories or unesco objectives
+    if not selected_category and selected_countries and not selected_unesco_cat:
+        print('Filter by countries')
+        filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
+        # new categories and subcategories from filtered data
+        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+        new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df)
+        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+    
+    # case: filter by categories but not by countries or unesco objectives
+    if selected_category and not selected_countries and not selected_unesco_cat:
+        print('Filter by categories')
+        filtered_df = filter_data(selected_category)
+        # new categories and subcategories from filtered data
+        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+        new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df)
+        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+    
+    # case: filter by categories and countries but not by unesco objectives
+    if selected_category and selected_countries and not selected_unesco_cat:
+        print('Filter by categories and countries')
+        # apply country filter before category filter
+        filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
+        # apply category filter after country filter
+        filtered_df = filter_data_from_data_frame(selected_category, filtered_df)
+        # new categories and subcategories from filtered data
+        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+        new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df)
+        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+    
+    # case: filter by unesco objectives but not by categories or countries
+    if not selected_category and not selected_countries and selected_unesco_cat:
+        print('Filter by unesco objectives')
+        filtered_df = filter_data(selected_unesco_cat)
+        # new categories and subcategories from filtered data
+        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+        new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df)
+        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+    
+    # case: filter by unesco objectives and countries but not by categories
+    if not selected_category and selected_countries and selected_unesco_cat:
+        print('Filter by unesco objectives and countries')
+        # apply country filter before category filter
+        filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
+        # apply category filter after country filter
+        filtered_df = filter_data_from_data_frame(selected_unesco_cat, filtered_df)
+        # new categories and subcategories from filtered data
+        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+        new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df)
+        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+    
+    # case: filter by unesco objectives and categories but not by countries
+    if selected_category and not selected_countries and selected_unesco_cat:
+        print('Filter by unesco objectives and categories')
+        filtered_df = filter_data_from_data_frame(selected_unesco_cat, data_frame)
+        # apply category filter after country filter
+        filtered_df = filter_data_from_data_frame(selected_category, filtered_df)
+        # new categories and subcategories from filtered data
+        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+        new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df)
+        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+    
+    # case: filter by unesco objectives, categories and countries
+    if selected_category and selected_countries and selected_unesco_cat:
+        print('Filter by unesco objectives, categories and countries')
+        # apply country filter before category filter
+        filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
+        # apply category filter after country filter
+        filtered_df = filter_data_from_data_frame(selected_category, filtered_df)
+        # apply unesco objectives filter after category filter
+        filtered_df = filter_data_from_data_frame(selected_unesco_cat, filtered_df)
+        # new categories and subcategories from filtered data
+        new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
+        new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df)
+        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+    
+    #

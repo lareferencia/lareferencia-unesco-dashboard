@@ -3,7 +3,10 @@ import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
 
-def getLayout(categories_dropdown,excluded_columns,data_frame,unesco_options):
+#Seleccionar columnas a mostrar en el grid
+excluded_columns = ['PAIS', 'Nombre de la iniciativa','Detalles', 'WEB', 'CONTACTO']
+
+def getLayout(categories_dropdown,data_frame,unesco_options):
     layout = html.Div([
         html.Div([
         html.Div([    
