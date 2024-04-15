@@ -9,7 +9,7 @@ url = 'https://raw.githubusercontent.com/lareferencia/lareferencia-unesco-dashbo
 
 
 #load codigo_a_pais from csv
-
+codigo_a_pais = read_csv('https://raw.githubusercontent.com/lareferencia/lareferencia-unesco-dashboard/main/csv%20files/codigo_a_pais.csv')
 
 
 def cure_data(data_frame):
@@ -22,8 +22,9 @@ def cure_data(data_frame):
     # Modificar el nombre de la columna en el DataFrame
     data_frame.rename(columns={'CODIGO': 'PAIS'}, inplace=True)
 
-    data_frame['PAIS'] = data_frame['PAIS'].map(codigo_a_pais)
-    
+    # Reemplazar los códigos de país por los nombres de los países
+    data_frame['PAIS'] = data_frame['PAIS'].apply(lambda x: codigo_a_pais[codigo_a_pais['Codigo'] == x]['Pais'].values[0] if x in codigo_a_pais['Codigo'].values else x)
+
     # Agregar la columna 'Detalles' con el mismo valor que la columna 'Nombre de la iniciativa'
     data_frame['Detalles'] = data_frame['Nombre de la iniciativa']
     
