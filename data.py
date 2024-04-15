@@ -2,29 +2,15 @@ from pandas import read_csv, concat, notna
 
 from categories_and_subcategories_protocol import *
 
-import time
 
-import re
-
-import traceback
 
 #url
 url = 'https://raw.githubusercontent.com/lareferencia/lareferencia-unesco-dashboard/main/csv%20files/full.csv'
 
-codigo_a_pais = {
-    'AR': 'Argentina',
-    'BR': 'Brazil',
-    'CR': 'Costa Rica',
-    'EC': 'Ecuador',
-    'ES': 'España',
-    'UY': 'Uruguay',
-    'PE': 'Peru',
-    'MX': 'Mexico',
-    'PA': 'Panama',
-    'SV': 'El Salvador',
-    ' CO': 'Colombia',
-    ' CL': 'Chile'
-}
+
+#load codigo_a_pais from csv
+
+
 
 def cure_data(data_frame):
     # if NAN in web column, replace with 'NO INFO'
