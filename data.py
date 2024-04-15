@@ -162,23 +162,35 @@ def get_categories_list():
     categories_list = []
     if categories_codes is not None:
         for code in categories_codes:
-            #create label with name and count
-            label = f'{get_category_by_code(code)} ({get_category_count(code)})'
-            #append dictionary to the list of dictionaries
-            categories_list.append({'label': label, 'value': code})
-            #get subcategories for each category
-            subcategories = get_subcategories_by_category_code(code)
-            for subcategory in subcategories:
-                code_subcategory = get_code_by_subcategory(subcategory)
+            if code != '07':
                 #create label with name and count
-                label = f'..... {subcategory} ({get_subcategory_count(code_subcategory)})'
-                #label = f'..... {subcategory} '
+                label = f'{get_category_by_code(code)} ({get_category_count(code)})'
                 #append dictionary to the list of dictionaries
-                categories_list.append({'label': label, 'value': code_subcategory})
+                categories_list.append({'label': label, 'value': code})
+                #get subcategories for each category
+                subcategories = get_subcategories_by_category_code(code)
+                for subcategory in subcategories:
+                    code_subcategory = get_code_by_subcategory(subcategory)
+                    #create label with name and count
+                    label = f'..... {subcategory} ({get_subcategory_count(code_subcategory)})'
+                    #label = f'..... {subcategory} '
+                    #append dictionary to the list of dictionaries
+                    categories_list.append({'label': label, 'value': code_subcategory})
         return categories_list
     else:
         return []
+
+########################## just OBJETIVOS UNESCO with subcategories in dictionary with code ##########################
+def get_categories_list_objetivos_unesco():
+    subcategories = get_subcategories_by_category_code('07')
+    subcategories_list = []
+    for subcategory in subcategories:
+        code_subcategory = get_code_by_subcategory(subcategory)
+        label = f'{subcategory} ({get_subcategory_count(code_subcategory)})'
+        subcategories_list.append({'label': label, 'value': code_subcategory})
+    return subcategories_list
     
+
 ########################## all categories in dictionary with code FROM GIVEN DATA FRAME ##########################
 def get_categories_list_from_data_frame(data_frame):
     #categories_codes= list(get_categories_set_from_data_frame(data_frame))
@@ -280,3 +292,4 @@ def filter_data_from_data_frame(categories,data_frame):
     
 
     return filtered_rows
+

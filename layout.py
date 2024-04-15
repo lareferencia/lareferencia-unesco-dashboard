@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
 
-def getLayout(categories_dropdown,excluded_columns,data_frame):
+def getLayout(categories_dropdown,excluded_columns,data_frame,unesco_options):
     layout = html.Div([
         html.Div([
         html.Div([    
@@ -27,7 +27,14 @@ def getLayout(categories_dropdown,excluded_columns,data_frame):
 
             ],
             style={ 'background-color': '#CFD8DC', 'display': 'flex'}),
-
+            html.Div(
+                style={'width':'30%'},
+                children=[
+                            dcc.Dropdown(
+                                id='objetivos-dropdown',
+                                options=unesco_options,
+                                placeholder='Seleccione un objetivo UNESCO',
+                                multi=True,)]),
             html.Div(
             style={'display':'flex'},
             children=[

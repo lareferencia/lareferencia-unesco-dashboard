@@ -18,6 +18,9 @@ categories_dropdown = get_categories_list()
 
 time_final = time.time()
 time_ejecucion = time_final - time_inicial
+
+unesco_options = get_categories_list_objetivos_unesco()
+
 print('Tiempo de ejecución de get_categories_list: ', time_ejecucion)
 
 
@@ -31,7 +34,7 @@ external_stylesheets = [
 # Agregar las hojas de estilo externas a la aplicación
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
-app.layout = getLayout(categories_dropdown,excluded_columns,data_frame)
+app.layout = getLayout(categories_dropdown,excluded_columns,data_frame,unesco_options)
 
 @app.callback(
     [
