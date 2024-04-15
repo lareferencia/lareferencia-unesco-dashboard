@@ -33,6 +33,8 @@ external_stylesheets = [
 # Agregar las hojas de estilo externas a la aplicación
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
+server = app.server
+
 app.layout = getLayout(categories_dropdown,data_frame,unesco_options)
 
 @app.callback(
