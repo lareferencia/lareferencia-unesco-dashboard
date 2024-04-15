@@ -1,5 +1,7 @@
-from os.path import exists
+import os
 import json
+
+
 
 #load EN json 
 with open("translate/en.json", "r", encoding='utf-8') as f:
