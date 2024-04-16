@@ -19,9 +19,12 @@ def get_language():
 def set_language(l):
     global lang
     lang = l
+    print('Language set to ', lang)
 
 def getLayout(categories_dropdown,data_frame,unesco_options):
-    layout = html.Div([
+    layout = html.Div(
+        id='layout',
+        children=[
         html.Meta(charSet='utf-8'),
         html.Div(
                 style={'width':'30%'},
@@ -30,6 +33,7 @@ def getLayout(categories_dropdown,data_frame,unesco_options):
                                 id='language-dropdown',
                                 options=[{'label': 'English', 'value': 'en'},{'label': 'Español', 'value': 'es'}],
                                 placeholder=translate(lang,'Select_a_language'),
+                                value=lang,
                                 multi=False,)]),
         html.Div([
         html.Div([    
@@ -125,3 +129,4 @@ def getLayout(categories_dropdown,data_frame,unesco_options):
         ),
     ], style={'padding': '20px'})
     return layout
+

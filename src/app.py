@@ -3,11 +3,13 @@ import time
 from data import *
 import dash_bootstrap_components as dbc
 
-from layout import getLayout
+from layout import *
 
 # Obtener datos desde la capa de datos
 data_frame = get_all_data()
 
+# get global lang
+lang = get_language
 
 
 time_inicial = time.time()
@@ -35,7 +37,13 @@ app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 server = app.server
 
-app.layout = getLayout(categories_dropdown,data_frame,unesco_options)
+app.layout =html.Div(
+    id='main-layout',
+    children=[]
+)
+#set childre to layout
+app.layout.children = getLayout(categories_dropdown,data_frame,unesco_options)
+
 
 @app.callback(
     [
@@ -98,7 +106,23 @@ def update_card_info(selected_cell, is_open):
             return False, []
     return False, []
 
-
+#lang callback to set global language variable
+@app.callback(
+    [
+        Output('language-dropdown', 'value'),
+        Output('main-layout', 'children')
+    ],
+    [Input('language-dropdown', 'value')]
+)
+def set_lang(value):
+    print('Inside callback set_lang')
+    # case: value is empty
+    if value is None or value == "":
+        return ""
+    set_language(value)
+    #layout
+    layout = getLayout(categories_dropdown,data_frame,unesco_options)
+    return value, layout
 
 
 
