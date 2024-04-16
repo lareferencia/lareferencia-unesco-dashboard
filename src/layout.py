@@ -58,7 +58,7 @@ def getLayout(categories_dropdown,data_frame,unesco_options):
             ],
             style={ 'background-color': '#CFD8DC', 'display': 'flex'}),
             html.Div(
-                style={'width':'30%'},
+                style={'width':'100%'},
                 children=[
                             dcc.Dropdown(
                                 id='objetivos-dropdown',
