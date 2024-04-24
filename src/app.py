@@ -56,6 +56,7 @@ app.layout.children = getLayout(categories_dropdown,data_frame,unesco_options)
      Input('countries-dropdown', 'value'),
      Input('objetivos-dropdown', 'value')]
 )
+
 def callback_update_table(selected_category, selected_countries, selected_objetivos_unesco):
     # estimar el tiempo de ejecución de la función
     time_inicial = time.time()
@@ -76,6 +77,7 @@ def callback_update_table(selected_category, selected_countries, selected_objeti
         Input("row-selection-modal-close", "n_clicks"),
     ],
 )
+
 def update_card_info(selected_cell, is_open):
     if ctx.triggered_id == "row-selection-modal-close":
         return False, None

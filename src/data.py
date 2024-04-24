@@ -1,15 +1,16 @@
+import configparser
 from pandas import read_csv, concat, notna
-
 from categories_and_subcategories_protocol import *
 
 
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-#url
-url = 'https://raw.githubusercontent.com/lareferencia/lareferencia-unesco-dashboard/main/csv%20files/full.csv'
-
+#URL
+url = config['DATA']['URL']
 
 #load codigo_a_pais from csv
-codigo_a_pais = read_csv('https://raw.githubusercontent.com/lareferencia/lareferencia-unesco-dashboard/main/csv%20files/codigo_a_pais.csv')
+codigo_a_pais = read_csv(config['DATA']['COUNTRY_A_CODE'])
 
 #Seleccionar columnas a mostrar en el grid
 excluded_columns = ['PAIS', 'Nombre de la iniciativa','Detalles', 'WEB', 'CONTACTO']
@@ -44,6 +45,8 @@ def get_all_data():
     return data_frame
 
 
+
+#TODO: CAMBIAR LOS NOMBRES QUE ESTAN EN ESPAÑOL A INGLÉS
 
 ########################## SET CATEGORIAS ##########################
 def get_categories_set():
@@ -137,7 +140,6 @@ def get_subcategories_set():
     else:
         return set()
     
-
 ########################## GET CATEGORY NAMES ##########################
 def get_category_names():
 
@@ -156,7 +158,6 @@ def get_subcategory_names():
     for code in subcategories_codes:
         subcategory_names.append(get_subcategory_by_code(code))
     return subcategory_names
-
 
 ########################## all categories in dictionary with code ##########################
 def get_categories_list():
@@ -192,7 +193,6 @@ def get_categories_list_objetivos_unesco():
         subcategories_list.append({'label': label, 'value': code_subcategory})
     return subcategories_list
     
-
 ########################## all categories in dictionary with code FROM GIVEN DATA FRAME ##########################
 def get_categories_list_from_data_frame(data_frame):
     #categories_codes= list(get_categories_set_from_data_frame(data_frame))
