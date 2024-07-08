@@ -3,10 +3,10 @@ import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
 
-# uo one level up to import the translate function
+# up one level up to import the translate function
 from translate.translate import translate
 
-#Seleccionar columnas a mostrar en el grid
+#Select columns to exclude from the table
 excluded_columns = ['PAIS', 'Nombre de la iniciativa','Detalles', 'WEB', 'CONTACTO']
 
 #set language
