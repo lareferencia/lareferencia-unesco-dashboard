@@ -1,6 +1,7 @@
 import configparser
 from pandas import read_csv, concat, notna
 from categories_and_subcategories_protocol import *
+from utilities.logging_utils import log_execution_time
 
 
 config = configparser.ConfigParser()
@@ -15,6 +16,7 @@ codigo_a_pais = read_csv(config['DATA']['COUNTRY_A_CODE'])
 #Seleccionar columnas a mostrar en el grid
 excluded_columns = ['PAIS', 'Nombre de la iniciativa','Detalles', 'WEB', 'CONTACTO']
 
+@log_execution_time
 def cure_data(data_frame):
     # if NAN in web column, replace with 'NO INFO'
     data_frame['WEB'] = data_frame['WEB'].fillna('NO INFO')
@@ -40,7 +42,8 @@ try:
 except Exception as e:
     print(f"Error loading data: {e}")
     #print(traceback.format_exc())
-    
+
+@log_execution_time    
 def get_all_data():
     return data_frame
 
@@ -49,6 +52,7 @@ def get_all_data():
 #TODO: CAMBIAR LOS NOMBRES QUE ESTAN EN ESPAÑOL A INGLÉS
 
 ########################## SET CATEGORIES ##########################
+@log_execution_time
 def get_categories_set():
 
     data_frame = get_all_data()
@@ -73,6 +77,7 @@ def get_categories_set():
         return set()
     
 ########################## SET CATEGORY BY GIVEN DATA FRAME ##########################
+@log_execution_time
 def get_categories_set_from_data_frame(data):
     data_frame=data
     if data_frame is not None:
@@ -95,6 +100,7 @@ def get_categories_set_from_data_frame(data):
         return set()
     
 ########################## SET SUBCATEGORY BY GIVEN DATA FRAME ##########################
+@log_execution_time
 def get_subcategories_set_from_data_frame(data):
     data_frame=data
     if data_frame is not None:
@@ -117,6 +123,7 @@ def get_subcategories_set_from_data_frame(data):
         return set()
 
 ########################## SET SUBCATEGORIES ##########################
+@log_execution_time
 def get_subcategories_set():
 
     data_frame = get_all_data()
@@ -141,6 +148,7 @@ def get_subcategories_set():
         return set()
     
 ########################## GET CATEGORY NAMES ##########################
+@log_execution_time
 def get_category_names():
     # get categories codes
     categories_codes= list(get_categories_set())
@@ -154,6 +162,7 @@ def get_category_names():
     return category_names
 
 ########################## GET SUBCATEGORY NAMES ##########################
+@log_execution_time
 def get_subcategory_names():
     # get subcategories codes
     subcategories_codes= list(get_subcategories_set())
@@ -167,6 +176,7 @@ def get_subcategory_names():
     return subcategory_names
 
 ########################## all categories in dictionary with code ##########################
+@log_execution_time
 def get_categories_list():
     # get categories codes sorted by code
     categories_codes= sorted(get_categories_set(), key=lambda x: int(x))
@@ -197,6 +207,7 @@ def get_categories_list():
         return []
 
 ########################## just OBJETIVOS UNESCO with subcategories in dictionary with code ##########################
+@log_execution_time
 def get_categories_list_objetivos_unesco():
     # get subcategories for category code '07' (UNESCO objectives)
     subcategories = get_subcategories_by_category_code('07')
@@ -210,6 +221,7 @@ def get_categories_list_objetivos_unesco():
     return subcategories_list
     
 ########################## all categories in dictionary with code FROM GIVEN DATA FRAME ##########################
+@log_execution_time
 def get_categories_list_from_data_frame(data_frame):
     #categories_codes= list(get_categories_set_from_data_frame(data_frame))
     subcategories_codes= list(get_subcategories_set_from_data_frame(data_frame)) 
@@ -240,6 +252,7 @@ def get_categories_list_from_data_frame(data_frame):
         return []
 
 ########################## just Objetivos unesco with subcategories FROM GIVEN DATA FRAME ##########################
+@log_execution_time
 def get_categories_list_objetivos_unesco_from_data_frame(data_frame):
     # get subcategories for category code '07' (UNESCO objectives)
     subcategories = get_subcategories_by_category_code('07')
@@ -253,6 +266,7 @@ def get_categories_list_objetivos_unesco_from_data_frame(data_frame):
     return subcategories_list
 
 ###################### get count for category ######################
+@log_execution_time
 def get_category_count(category):
     data_frame = get_all_data()
     if data_frame is not None:
@@ -264,6 +278,7 @@ def get_category_count(category):
         return 0
 
 ###################### get count for category with filtered data_frame ######################
+@log_execution_time
 def get_category_count_filtered(category,filtered_data_frame):
     # In this case data_frame is the filtered data frame and not the global data frame
     data_frame = filtered_data_frame
@@ -277,6 +292,7 @@ def get_category_count_filtered(category,filtered_data_frame):
         return 0
 
 ###################### get count for subcategory ######################
+@log_execution_time
 def get_subcategory_count(subcategory):
     data_frame = get_all_data()
     if data_frame is not None:
@@ -289,6 +305,7 @@ def get_subcategory_count(subcategory):
         return 0
     
 ###################### get count for subcategory in filtered data frame#################
+@log_execution_time
 def get_subcategory_count_filtered(subcategory,filtered_data_frame):
     # In this case data_frame is the filtered data frame and not the global data frame
     data_frame = filtered_data_frame
@@ -303,7 +320,7 @@ def get_subcategory_count_filtered(subcategory,filtered_data_frame):
 
 
 ########################## Filter data exclusive (no additive) ##########################
-
+@log_execution_time
 def filter_data(categories):
     filtered_rows = get_all_data()
 
@@ -319,6 +336,7 @@ def filter_data(categories):
     return filtered_rows
 
 ####################### Filter data from given data frame exclusive (no additive) ############################
+@log_execution_time
 def filter_data_from_data_frame(categories,data_frame):
     # In this case data_frame is the filtered data frame and not the global data frame
     filtered_rows = data_frame
@@ -333,6 +351,7 @@ def filter_data_from_data_frame(categories,data_frame):
 
     return filtered_rows
 
+@log_execution_time
 def update_table(selected_category,selected_countries,selected_unesco_cat):
     # case: no filters at all
     if not selected_category and not selected_countries and not selected_unesco_cat:
