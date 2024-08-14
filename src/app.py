@@ -93,15 +93,15 @@ def update_card_info(selected_cell, is_open):
                 html.P(function_of_initiative, style={'margin': '10px'}),
                 html.Hr(),
                 html.Div([
-                    html.Strong('País: '),
+                    html.Strong(translate(get_language(),'País: ')),
                     html.Span(str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'PAIS'].values[0]))
                 ], style={'margin': '10px'}),
                 html.Div([
-                    html.Strong('Web: '),
+                    html.Strong(translate(get_language(),'Web: ')),
                     html.Span(str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'WEB'].values[0]))
                 ], style={'margin': '10px'}),
                 html.Div([
-                    html.Strong('Contacto: '),
+                    html.Strong(translate(get_language(),'Contacto: ')),
                     html.Span(str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'CONTACTO'].values[0]))
                 ], style={'margin': '10px'})]
             return True, card_content
