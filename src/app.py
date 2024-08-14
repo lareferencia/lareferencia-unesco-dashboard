@@ -1,4 +1,4 @@
-from dash import Dash, Input, Output, ctx, html
+from dash import Dash, Input, Output, ctx, html, State
 import time
 from data import *
 import dash_bootstrap_components as dbc
@@ -122,21 +122,24 @@ def update_card_info(selected_cell, is_open):
 
 #lang callback to set global language variable
 @app.callback(
-    [
-        Output('language-dropdown', 'value'),
-        Output('main-layout', 'children')
-    ],
-    [Input('language-dropdown', 'value')]
+    [Output('language-store', 'data'), Output('main-layout', 'children')],
+    [Input('english-flag', 'n_clicks'), Input('spanish-flag', 'n_clicks')],
+    [State('language-store', 'data')]
 )
-def set_lang(value):
-    print('Inside callback set_lang')
-    # case: value is empty
-    if value is None or value == "":
-        return ""
-    set_language(value)
-    # render the layout with the new language
-    layout = getLayout(categories_dropdown,data_frame,unesco_options)
-    return value, layout
+def update_language(n_clicks_english, n_clicks_spanish, data):
+    # case: english flag is clicked
+    if n_clicks_english > 0:
+        set_language('en')
+        layout = getLayout(categories_dropdown,data_frame,unesco_options)
+        return 'en', layout
+    # case: spanish flag is clicked
+    elif n_clicks_spanish > 0:
+        set_language('es')
+        layout = getLayout(categories_dropdown,data_frame,unesco_options)
+        return 'es', layout
+    # case: no flag is clicked
+    else:
+        return data, getLayout(categories_dropdown,data_frame,unesco_options)
 
 
 # Run the app

@@ -27,14 +27,27 @@ def getLayout(categories_dropdown,data_frame,unesco_options):
         children=[
         html.Meta(charSet='utf-8'),
         html.Div(
-                style={'width':'30%'},
-                children=[
-                            dcc.Dropdown(
-                                id='language-dropdown',
-                                options=[{'label': 'English', 'value': 'en'},{'label': 'Español', 'value': 'es'}],
-                                placeholder=translate(lang,'Select_a_language'),
-                                value=lang,
-                                multi=False,)]),
+            style={
+                'display':'flex',
+                'justify-content':'end','gap':'10px'
+                ,'padding':'10px',},
+            children=[
+                html.Img(
+                        id='english-flag',
+                        src='/assets/images/en.svg',
+                        style={'cursor': 'pointer', 'width': '30px'},
+                        title='English',
+                        n_clicks=0
+                    ),
+                html.Img(
+                        id='spanish-flag',
+                        src='/assets/images/es_es.svg',
+                        style={'cursor': 'pointer', 'width': '30px'},
+                        title='Español',
+                        n_clicks=0
+                ),
+                dcc.Store(id='language-store', data=lang)
+        ]),
         html.Div([
         html.Div([    
             dcc.Dropdown(
