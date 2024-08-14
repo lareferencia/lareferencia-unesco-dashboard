@@ -1,8 +1,8 @@
-Categoría,cod_categoría
-Conocimiento científico abierto,01
-Participación abierta de los agentes sociales,02
-Diálogos abiertos con otros sistemas de conocimiento,03
-Infraestructuras de la ciencia abierta,04
-DIMENSIONES NO UNESCO,05
-Cuerpos Normativos,06
-OBJETIVOS UNESCO,07
+Categoría,Category,cod_categoría
+Conocimiento científico abierto,Open scientific knowledge,01
+Participación abierta de los agentes sociales,Open participation of social agents,02
+Diálogos abiertos con otros sistemas de conocimiento,Open dialogues with other knowledge systems,03
+Infraestructuras de la ciencia abierta,Open science infrastructures,04
+DIMENSIONES NO UNESCO,Non-UNESCO dimensions,05
+Cuerpos Normativos,Regulatory bodies,06
+OBJETIVOS UNESCO,UNESCO objectives,07
