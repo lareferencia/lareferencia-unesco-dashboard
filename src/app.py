@@ -98,7 +98,11 @@ def update_card_info(selected_cell, is_open):
                 ], style={'margin': '10px'}),
                 html.Div([
                     html.Strong(translate(get_language(),'Web: ')),
-                    html.Span(str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'WEB'].values[0]))
+                    html.A(
+                        href=str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'WEB'].values[0]),
+                        children=str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'WEB'].values[0]),
+                        target='_blank'
+                    )
                 ], style={'margin': '10px'}),
                 html.Div([
                     html.Strong(translate(get_language(),'Contacto: ')),
