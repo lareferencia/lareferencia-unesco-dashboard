@@ -41,7 +41,6 @@ try:
     cure_data(data_frame)
 except Exception as e:
     print(f"Error loading data: {e}")
-    #print(traceback.format_exc())
 
 @log_execution_time    
 def get_all_data():
@@ -355,7 +354,6 @@ def filter_data_from_data_frame(categories,data_frame):
 def update_table(selected_category,selected_countries,selected_unesco_cat):
     # case: no filters at all
     if not selected_category and not selected_countries and not selected_unesco_cat:
-        print('No filters')
         new_categories_dropdown = get_categories_list()
         new_categories_dropdown_unesco = get_categories_list_objetivos_unesco()
         new_countries_dropdown = data_frame['PAIS'].unique()
@@ -363,7 +361,6 @@ def update_table(selected_category,selected_countries,selected_unesco_cat):
     
     # case: filter by countries but not by categories or unesco objectives
     if not selected_category and selected_countries and not selected_unesco_cat:
-        print('Filter by countries')
         filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
         # new categories and subcategories from filtered data
         new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
@@ -372,7 +369,6 @@ def update_table(selected_category,selected_countries,selected_unesco_cat):
     
     # case: filter by categories but not by countries or unesco objectives
     if selected_category and not selected_countries and not selected_unesco_cat:
-        print('Filter by categories')
         filtered_df = filter_data(selected_category)
         # new categories and subcategories from filtered data
         new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
@@ -381,7 +377,6 @@ def update_table(selected_category,selected_countries,selected_unesco_cat):
     
     # case: filter by categories and countries but not by unesco objectives
     if selected_category and selected_countries and not selected_unesco_cat:
-        print('Filter by categories and countries')
         # apply country filter before category filter
         filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
         # apply category filter after country filter
@@ -393,7 +388,6 @@ def update_table(selected_category,selected_countries,selected_unesco_cat):
     
     # case: filter by unesco objectives but not by categories or countries
     if not selected_category and not selected_countries and selected_unesco_cat:
-        print('Filter by unesco objectives')
         filtered_df = filter_data(selected_unesco_cat)
         # new categories and subcategories from filtered data
         new_categories_dropdown = get_categories_list_from_data_frame(filtered_df)
@@ -402,7 +396,6 @@ def update_table(selected_category,selected_countries,selected_unesco_cat):
     
     # case: filter by unesco objectives and countries but not by categories
     if not selected_category and selected_countries and selected_unesco_cat:
-        print('Filter by unesco objectives and countries')
         # apply country filter before category filter
         filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
         # apply category filter after country filter
@@ -414,7 +407,6 @@ def update_table(selected_category,selected_countries,selected_unesco_cat):
     
     # case: filter by unesco objectives and categories but not by countries
     if selected_category and not selected_countries and selected_unesco_cat:
-        print('Filter by unesco objectives and categories')
         filtered_df = filter_data_from_data_frame(selected_unesco_cat, data_frame)
         # apply category filter after country filter
         filtered_df = filter_data_from_data_frame(selected_category, filtered_df)
@@ -425,7 +417,6 @@ def update_table(selected_category,selected_countries,selected_unesco_cat):
     
     # case: filter by unesco objectives, categories and countries
     if selected_category and selected_countries and selected_unesco_cat:
-        print('Filter by unesco objectives, categories and countries')
         # apply country filter before category filter
         filtered_df = data_frame[data_frame['PAIS'].isin(selected_countries)]
         # apply category filter after country filter

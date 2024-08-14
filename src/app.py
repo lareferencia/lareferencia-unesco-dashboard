@@ -12,18 +12,13 @@ data_frame = get_all_data()
 lang = get_language
 
 
-time_inicial = time.time()
-
 #get categories for the dropdown and check the time of execution
 categories_dropdown = get_categories_list()
 
-time_final = time.time()
-time_total = time_final - time_inicial
 
 # get objetivos unesco options and check the time of execution
 unesco_options = get_categories_list_objetivos_unesco()
 
-print('Time taken by to get categories', time_total)
 
 
 
@@ -63,13 +58,8 @@ app.layout.children = getLayout(categories_dropdown,data_frame,unesco_options)
 )
 
 def callback_update_table(selected_category, selected_countries, selected_objetivos_unesco):
-    # get the time of execution of the update_table function
-    time_inicial = time.time()
     # call the update_table function from the data layer
     Output = update_table(selected_category, selected_countries, selected_objetivos_unesco)
-    time_final = time.time()
-    time_total = time_final - time_inicial
-    print('Time taken by the update_table function: ', time_total)
     return Output
 
 #callback for the modal that shows the information of the selected cell
@@ -93,7 +83,6 @@ def update_card_info(selected_cell, is_open):
     if  selected_cell and not is_open:
         # Get the value of the selected cell
         cell_value = selected_cell['value']
-        print('Selected cell ', selected_cell)
         # Check if cell_value is present in 'Nombre de la iniciativa' column
         if cell_value in data_frame['Nombre de la iniciativa'].values:
             # Get the function of the initiative from the data_frame
