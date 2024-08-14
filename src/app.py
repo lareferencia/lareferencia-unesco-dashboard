@@ -123,7 +123,7 @@ def update_card_info(selected_cell, is_open):
 #lang callback to set global language variable
 @app.callback(
     [Output('language-store', 'data'), Output('main-layout', 'children')],
-    [Input('english-flag', 'n_clicks'), Input('spanish-flag', 'n_clicks')],
+    [Input('english-link', 'n_clicks'), Input('spanish-link', 'n_clicks')],
     [State('language-store', 'data')]
 )
 def update_language(n_clicks_english, n_clicks_spanish, data):

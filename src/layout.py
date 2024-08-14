@@ -32,16 +32,18 @@ def getLayout(categories_dropdown,data_frame,unesco_options):
                 'justify-content':'end','gap':'10px'
                 ,'padding':'10px',},
             children=[
-                html.Img(
-                        id='english-flag',
-                        src='/assets/images/en.svg',
+                html.A(
+                        'EN',
+                        id='english-link',
+                        href='#',
                         style={'cursor': 'pointer', 'width': '30px'},
                         title='English',
                         n_clicks=0
                     ),
-                html.Img(
-                        id='spanish-flag',
-                        src='/assets/images/es_es.svg',
+                html.A(
+                        'ES',
+                        id='spanish-link',
+                        href='#',
                         style={'cursor': 'pointer', 'width': '30px'},
                         title='Español',
                         n_clicks=0
