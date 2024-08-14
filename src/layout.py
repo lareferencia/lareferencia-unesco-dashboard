@@ -19,7 +19,6 @@ def get_language():
 def set_language(l):
     global lang
     lang = l
-    print('Language set to ', lang)
 
 def getLayout(categories_dropdown,data_frame,unesco_options):
     layout = html.Div(

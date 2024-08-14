@@ -13,11 +13,11 @@ lang = get_language
 
 
 #get categories for the dropdown and check the time of execution
-categories_dropdown = get_categories_list()
+categories_dropdown = get_categories_list(get_language())
 
 
 # get objetivos unesco options and check the time of execution
-unesco_options = get_categories_list_objetivos_unesco()
+unesco_options = get_categories_list_objetivos_unesco(get_language())
 
 
 
@@ -59,7 +59,7 @@ app.layout.children = getLayout(categories_dropdown,data_frame,unesco_options)
 
 def callback_update_table(selected_category, selected_countries, selected_objetivos_unesco):
     # call the update_table function from the data layer
-    Output = update_table(selected_category, selected_countries, selected_objetivos_unesco)
+    Output = update_table(selected_category, selected_countries, selected_objetivos_unesco,get_language())
     return Output
 
 #callback for the modal that shows the information of the selected cell
