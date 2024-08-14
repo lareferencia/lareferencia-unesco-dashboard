@@ -86,9 +86,7 @@ def getLayout(categories_dropdown,data_frame,unesco_options):
                 dag.AgGrid(
                     id='data-table',
                     columnDefs=[
-                        {'headerName': 'País' if col == 'PAIS' else 
-                                        'Web' if col == 'WEB' else 
-                                        'Contacto' if col == 'CONTACTO' else col,
+                        {'headerName': translate(get_language(),col), 
                             'field': col,
                             'filter': True if col in ['PAIS','Nombre de la iniciativa'] else None,
                             'sortable': True if col == 'PAIS' else False,
