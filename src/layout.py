@@ -10,7 +10,7 @@ from translate.translate import translate
 excluded_columns = ['PAIS', 'Nombre de la iniciativa','Detalles', 'WEB', 'CONTACTO']
 
 #set language
-lang = 'en'
+lang = 'es'
 
 #get language
 def get_language():
