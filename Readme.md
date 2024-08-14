@@ -24,3 +24,6 @@ Los principales desarrolladores del proyecto son Keynell Molina Mora y Andrés M
 ## Licencia
 
 De momento, el proyecto no tiene una licencia específica.
+
+## Figma Mockup Design
+[Link al mockup en figma](https://www.figma.com/design/5rN5XjDClMNWWWnSTOq02v/UNESCO-Dashboard?node-id=0-1&t=QjjCpIK7bE8GPKIo-1)
