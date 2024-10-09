@@ -1,10 +1,16 @@
 from dash import html,dcc
-import dash_bootstrap_components as dbc
-import dash_ag_grid as dag
-import dash_bootstrap_components as dbc
-
-# up one level up to import the translate function
+# import the translate function
 from translate.translate import translate
+# Bring dash chart
+from components.charts.chart_container import get_chart_container
+#bring language links component
+from components.language_links import get_language_links
+#Bring dropdowns
+from components.dropdowns import get_dropdowns
+#Bring ag_grid
+from components.ag_grid import get_ag_grid
+#Bring the modal
+from components.modal import get_modal
 
 #Select columns to exclude from the table
 excluded_columns = ['PAIS', 'Nombre de la iniciativa','Detalles', 'WEB', 'CONTACTO']
@@ -25,117 +31,14 @@ def getLayout(categories_dropdown,data_frame,unesco_options):
         id='layout',
         children=[
         html.Meta(charSet='utf-8'),
-        html.Div(
-            style={
-                'display':'flex',
-                'justify-content':'end','gap':'10px'
-                ,'padding':'10px',},
-            children=[
-                html.A(
-                        'EN',
-                        id='english-link',
-                        href='#',
-                        style={'cursor': 'pointer', 'width': '30px'},
-                        title='English',
-                        n_clicks=0
-                    ),
-                html.A(
-                        'ES',
-                        id='spanish-link',
-                        href='#',
-                        style={'cursor': 'pointer', 'width': '30px'},
-                        title='Español',
-                        n_clicks=0
-                ),
-                dcc.Store(id='language-store', data=lang)
-        ]),
-        html.Div([
-        html.Div([    
-            dcc.Dropdown(
-                id='countries-dropdown',
-                options=[{'label': pais, 'value': pais} for pais in data_frame['PAIS'].unique()],
-                multi=True,
-                placeholder=translate(lang,u'Select_a_country'),
-                style={'width': '100%'}
-            ),
-        ], style={'width': '30%'}),
-        html.Div([
-            dcc.Dropdown(
-                id='column-dropdown',
-                options=categories_dropdown,
-                placeholder=translate(lang,'Select_a_category'),
-                multi=True,
-                style={'width': '100%'}
-            ),
-        ], style={'flex': '1'}),
-
-            ],
-            style={ 'background-color': '#CFD8DC', 'display': 'flex'}),
-            html.Div(
-                style={'width':'100%'},
-                children=[
-                            dcc.Dropdown(
-                                id='objetivos-dropdown',
-                                options=unesco_options,
-                                placeholder=translate(lang,'Select_an_UNESCO_objective'),
-                                multi=True,)]),
+        get_language_links(lang),
+        get_dropdowns(data_frame, categories_dropdown, unesco_options,lang),
+        get_chart_container(),
             html.Div(
             style={'display':'flex'},
             children=[
-
-                dag.AgGrid(
-                    id='data-table',
-                    columnDefs=[
-                        {'headerName': translate(get_language(),col), 
-                            'field': col,
-                            'filter': True if col in ['PAIS','Nombre de la iniciativa'] else None,
-                            'sortable': True if col == 'PAIS' else False,
-                            'cellRenderer': "ContactoButton" if col == 'CONTACTO' else
-                            "WebButton" if col == 'WEB' else
-                            "IniciativaComponent" if col == 'Nombre de la iniciativa' else 
-                            "DetallesComponent" if col == 'Detalles' else None,
-                            'maxWidth': 120 if col =='Detalles' else 
-                                        100 if col == 'WEB' else None,
-                            'minWidth': 750 if col == 'Nombre de la iniciativa' else 
-                                        125 if col == 'PAIS' else 
-                                        120 if col == 'Detalles' else None,
-                            }
-                        for col in excluded_columns
-                    ],
-                    rowData=data_frame[excluded_columns].to_dict('records'),
-                    className="ag-theme-material",
-                    columnSize='responsiveSizeToFit',
-                    dashGridOptions={
-                        'pagination': True,
-                        'paginationAutoPageSize': True,
-                        "icons": {
-                            'menu': '<i class="fa fa-search" aria-hidden="true"></i>',
-                        }
-                    },
-                    defaultColDef={
-                        'resizable': True,
-                    },
-                    getRowStyle = {
-                    "styleConditions": [
-                        {
-                        "condition": "params.rowIndex % 2 === 0",
-                        "style": {"backgroundColor": "#CFD8DC"},
-                    },
-                ]
-                },
-                style={'height': '800px'}
-                ),
-                dbc.Modal(
-                    [
-                        dbc.ModalHeader(id='modal-header'),
-                        dbc.ModalBody(id='modal-body'),
-                        dbc.ModalFooter(dbc.Button("Close", id="row-selection-modal-close", className="ml-auto"),style={'display':'none'}),
-                    ],
-                    id='modal',
-                    size='lg',
-                    centered=True,
-                    is_open=False,
-                ),
+                get_ag_grid(data_frame,excluded_columns,get_language),
+                get_modal()
             ],
         className='header1'
         ),
