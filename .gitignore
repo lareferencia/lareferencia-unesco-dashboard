@@ -1,4 +1,3 @@
-dashenv
 src/logs
 __pycache__/
 *.pyc
