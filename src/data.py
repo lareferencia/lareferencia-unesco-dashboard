@@ -1,5 +1,5 @@
 import configparser
-from pandas import read_csv, concat, notna
+from pandas import read_csv, concat, notna, DataFrame
 from categories_and_subcategories_protocol import *
 from utilities.logging_utils import log_execution_time
 # up one level up to import the translate function
@@ -265,6 +265,21 @@ def get_categories_list_objetivos_unesco_from_data_frame(data_frame,lang):
         label = f'{translate(lang,subcategory)} ({get_subcategory_count_filtered(code_subcategory,data_frame)})'
         subcategories_list.append({'label': label, 'value': code_subcategory})
     return subcategories_list
+
+##################### get UNESCO objectives and count in df FROM GIVEN DATA FRAME #####################
+@log_execution_time
+def get_unesco_objectives_and_count(data_frame,lang):
+    # get subcategories for category code '07' (UNESCO objectives)
+    subcategories = get_subcategories_by_category_code('07')
+    #initialize df with empty list
+    data = []
+    # iterate through the subcategories and build the df
+    for subcategory in subcategories:
+        code_subcategory = get_code_by_subcategory(subcategory)
+        #df will have 2 columns: 'subcategory' and 'count'
+        data.append({'subcategory': translate(lang,subcategory), 'count': get_subcategory_count_filtered(code_subcategory,data_frame)})
+    df = DataFrame(data)
+    return df
 
 ###################### get count for category ######################
 @log_execution_time
