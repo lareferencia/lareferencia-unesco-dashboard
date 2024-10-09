@@ -50,7 +50,8 @@ app.layout.children = getLayout(categories_dropdown,data_frame,unesco_options)
         Output('data-table', 'rowData'),
         Output('column-dropdown', 'options'),
         Output('countries-dropdown', 'options'),
-        Output('objetivos-dropdown', 'options')
+        Output('objetivos-dropdown', 'options'),
+        Output('chart-container-container', 'children')
     ],
     [Input('column-dropdown', 'value'),
      Input('countries-dropdown', 'value'),
@@ -60,7 +61,14 @@ app.layout.children = getLayout(categories_dropdown,data_frame,unesco_options)
 def callback_update_table(selected_category, selected_countries, selected_objetivos_unesco):
     # call the update_table function from the data layer
     Output = update_table(selected_category, selected_countries, selected_objetivos_unesco,get_language())
-    return Output
+    
+    # get the new chart container
+    new_chart_container = get_chart_container(Output[0], get_language())
+    
+    # Convert the DataFrame to a list of dictionaries
+    rowData = Output[0].to_dict('records')
+    
+    return rowData, Output[1], Output[2], Output[3], new_chart_container
 
 #callback for the modal that shows the information of the selected cell
 @app.callback(

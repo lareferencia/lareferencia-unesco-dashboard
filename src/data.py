@@ -374,7 +374,7 @@ def update_table(selected_category,selected_countries,selected_unesco_cat,lang):
         new_categories_dropdown = get_categories_list(lang)
         new_categories_dropdown_unesco = get_categories_list_objetivos_unesco(lang)
         new_countries_dropdown = data_frame['PAIS'].unique()
-        return data_frame[excluded_columns].to_dict('records'), new_categories_dropdown, new_countries_dropdown, new_categories_dropdown_unesco
+        return data_frame, new_categories_dropdown, new_countries_dropdown, new_categories_dropdown_unesco
     
     # case: filter by countries but not by categories or unesco objectives
     if not selected_category and selected_countries and not selected_unesco_cat:
@@ -382,7 +382,7 @@ def update_table(selected_category,selected_countries,selected_unesco_cat,lang):
         # new categories and subcategories from filtered data
         new_categories_dropdown = get_categories_list_from_data_frame(filtered_df,lang)
         new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df,lang)
-        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+        return filtered_df, new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
     
     # case: filter by categories but not by countries or unesco objectives
     if selected_category and not selected_countries and not selected_unesco_cat:
@@ -390,7 +390,7 @@ def update_table(selected_category,selected_countries,selected_unesco_cat,lang):
         # new categories and subcategories from filtered data
         new_categories_dropdown = get_categories_list_from_data_frame(filtered_df,lang)
         new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df,lang)
-        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+        return filtered_df, new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
     
     # case: filter by categories and countries but not by unesco objectives
     if selected_category and selected_countries and not selected_unesco_cat:
@@ -401,7 +401,7 @@ def update_table(selected_category,selected_countries,selected_unesco_cat,lang):
         # new categories and subcategories from filtered data
         new_categories_dropdown = get_categories_list_from_data_frame(filtered_df,lang)
         new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df,lang)
-        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+        return filtered_df, new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
     
     # case: filter by unesco objectives but not by categories or countries
     if not selected_category and not selected_countries and selected_unesco_cat:
@@ -409,7 +409,7 @@ def update_table(selected_category,selected_countries,selected_unesco_cat,lang):
         # new categories and subcategories from filtered data
         new_categories_dropdown = get_categories_list_from_data_frame(filtered_df,lang)
         new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df,lang)
-        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+        return filtered_df, new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
     
     # case: filter by unesco objectives and countries but not by categories
     if not selected_category and selected_countries and selected_unesco_cat:
@@ -420,7 +420,7 @@ def update_table(selected_category,selected_countries,selected_unesco_cat,lang):
         # new categories and subcategories from filtered data
         new_categories_dropdown = get_categories_list_from_data_frame(filtered_df,lang)
         new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df,lang)
-        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+        return filtered_df, new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
     
     # case: filter by unesco objectives and categories but not by countries
     if selected_category and not selected_countries and selected_unesco_cat:
@@ -430,7 +430,7 @@ def update_table(selected_category,selected_countries,selected_unesco_cat,lang):
         # new categories and subcategories from filtered data
         new_categories_dropdown = get_categories_list_from_data_frame(filtered_df,lang)
         new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df,lang)
-        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+        return filtered_df, new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
     
     # case: filter by unesco objectives, categories and countries
     if selected_category and selected_countries and selected_unesco_cat:
@@ -443,6 +443,6 @@ def update_table(selected_category,selected_countries,selected_unesco_cat,lang):
         # new categories and subcategories from filtered data
         new_categories_dropdown = get_categories_list_from_data_frame(filtered_df,lang)
         new_categories_dropdown_unesco = get_categories_list_objetivos_unesco_from_data_frame(filtered_df,lang)
-        return filtered_df[excluded_columns].to_dict('records'), new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
+        return filtered_df, new_categories_dropdown, filtered_df['PAIS'].unique(), new_categories_dropdown_unesco
     
     #

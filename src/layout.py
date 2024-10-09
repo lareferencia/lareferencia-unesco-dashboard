@@ -33,13 +33,16 @@ def getLayout(categories_dropdown,data_frame,unesco_options):
         html.Meta(charSet='utf-8'),
         get_language_links(lang),
         get_dropdowns(data_frame, categories_dropdown, unesco_options,lang),
-        get_chart_container(data_frame,lang),
-            html.Div(
-            style={'display':'flex'},
-            children=[
-                get_ag_grid(data_frame,excluded_columns,get_language),
-                get_modal()
-            ],
+        html.Div(
+            id='chart-container-container',
+            children=[get_chart_container(data_frame,lang)]
+                 ),
+        html.Div(
+        style={'display':'flex'},
+        children=[
+            get_ag_grid(data_frame,excluded_columns,get_language),
+            get_modal()
+        ],
         className='header1'
         ),
     ], style={'padding': '20px'})
