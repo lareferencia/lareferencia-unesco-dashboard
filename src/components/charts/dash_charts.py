@@ -8,13 +8,13 @@ from data import get_unesco_objectives_and_count
 #Country distribution chart
 def getCountryDistributionPieChart(df,lang):
     fig = px.pie(df, names='PAIS', title=translate(lang, 'Country distribution'))
-    graph = dcc.Graph(figure=fig)
+    graph = dcc.Graph(figure=fig,config={'displaylogo': False,})
     return graph
 
 #Subcategories distribution chart
 def getSubcategoriesDistributionPieChart(df,lang):
     fig = px.pie(df, names='Subcategory', title=translate(lang, 'Subcategories distribution'))
-    graph = dcc.Graph(figure=fig)
+    graph = dcc.Graph(figure=fig,config={'displaylogo': False,})
     return graph
 
 #Unesco objectives distribution chart
@@ -40,7 +40,22 @@ def getUnescoObjectivesDistributionBarChart(df,lang):
             title=translate(lang, 'UNESCO objectives distribution'),
         )
     )
-    return dcc.Graph(figure=fig, config={
+    return dcc.Graph(figure=fig,config={
+        'displaylogo': False,
+        'modeBarButtonsToRemove':[
+            'zoom2d',
+            'pan2d',
+            'select2d',
+            'lasso2d',
+            'zoomIn2d',
+            'zoomOut2d',
+            'autoScale2d',
+            'resetScale2d',
+        ]})
+
+'''
+Options for this graph:
+config={
     'displayModeBar': True,
     'modeBarButtonsToAdd': [
         'drawline',
@@ -50,4 +65,5 @@ def getUnescoObjectivesDistributionBarChart(df,lang):
         'drawrect',
         'eraseshape'
     ]
-})
+}
+'''
