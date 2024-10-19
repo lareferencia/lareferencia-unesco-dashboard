@@ -251,6 +251,18 @@ def get_categories_list_from_data_frame(data_frame,lang):
         return categories_list
     else:
         return []
+    
+@log_execution_time
+def get_subcategories_list_from_data_frame(data_frame, lang):
+    subcategories_codes = list(get_subcategories_set_from_data_frame(data_frame))
+    #remove subcategories from category '07' (UNESCO objectives)
+    subcategories_codes = [code for code in subcategories_codes if code[:2] != '07']
+    subcategories_dict = {}
+    for code in subcategories_codes:
+        label = f'{translate(lang, get_subcategory_by_code(code))}'
+        count = get_subcategory_count_filtered(code, data_frame)
+        subcategories_dict[label] = count
+    return subcategories_dict
 
 ########################## just Objetivos unesco with subcategories FROM GIVEN DATA FRAME ##########################
 @log_execution_time

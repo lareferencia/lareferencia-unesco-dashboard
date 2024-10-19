@@ -14,7 +14,7 @@ def get_chart_container(data_frame,lang):
         style={'background-color': '#CFD8DC', 'display': 'flex', 'height': 'fit-content', 'flex-direction': 'row'},
         children=[
             get_chart_div('chart2', getCountryDistributionPieChart(data_frame,lang)),
-            get_chart_div('chart1', getCountryDistributionPieChart(data_frame,lang)),
+            get_chart_div('chart1', getSubcategoriesDistributionBarChart(data_frame,lang)),
             get_chart_div('chart3', getUnescoObjectivesDistributionBarChart(data_frame,lang)),
         ]
     )
