@@ -6,10 +6,26 @@ import pandas as pd
 from translate.translate import translate
 from data import get_unesco_objectives_and_count,get_subcategories_list_from_data_frame
 
-#Country distribution chart
-def getCountryDistributionPieChart(df,lang):
-    fig = px.pie(df, names='PAIS', title=translate(lang, 'Country distribution'))
-    graph = dcc.Graph(figure=fig,config={'displaylogo': False,})
+#color palette for the pie charts
+base_colors = [
+    "#003f5c", "#2f4b7c", "#665191", "#a05195", 
+    "#d45087", "#f95d6a", "#ff7c43", "#ffa600",
+    "#33658a", "#86bbd8", "#4caf50", "#ffd166",
+    "#ffe066", "#f28482", "#247ba0", "#c2c5aa",
+    "#b56576", "#8ac926"
+]
+
+
+
+# Function to extend the color list
+def extend_colors(base_colors, length):
+    return base_colors * (length // len(base_colors)) + base_colors[:length % len(base_colors)]
+
+# Country distribution chart
+def getCountryDistributionPieChart(df, lang):
+    colors = extend_colors(base_colors, len(df))
+    fig = px.pie(df, names='PAIS', title=translate(lang, 'Country distribution'), color_discrete_sequence=colors)
+    graph = dcc.Graph(figure=fig, config={'displaylogo': False})
     return graph
 
 #Subcategories distribution chart
@@ -22,10 +38,8 @@ def getSubcategoriesDistributionBarChart(df, lang):
     hovertexts = subcategories_df['subcategory'].apply(lambda x: (x[:75] + '...') if len(x) > 75 else x)
     # X axis text, truncated to a maximum length
     x_subcategories = subcategories_df['subcategory'].apply(lambda x: (x[:15] + '...') if len(x) > 15 else x)
-    # Create a list of colors, same as the pie charts 
-    colors = px.colors.qualitative.Plotly * (len(subcategories_df) // len(px.colors.qualitative.Plotly)) + \
-              px.colors.qualitative.Plotly[:len(subcategories_df) % len(px.colors.qualitative.Plotly)]
-    
+    # Extend the color list to match the number of subcategories
+    colors = extend_colors(base_colors, len(subcategories_df))
     # Create the figure
     fig = go.Figure(
         data=[
@@ -64,9 +78,8 @@ def getUnescoObjectivesDistributionBarChart(df,lang):
     hovertexts = objectives_df['subcategory'].apply(lambda x: (x[:75] + '...') if len(x) > 75 else x)
     # Modify 'subcategory' to only contain the first three characters
     objectives_df['subcategory'] = objectives_df['subcategory'].str[:3]
-    # Create a list of colors, same as the pie charts 
-    colors = px.colors.qualitative.Plotly * (len(objectives_df) // len(px.colors.qualitative.Plotly)) + \
-              px.colors.qualitative.Plotly[:len(objectives_df) % len(px.colors.qualitative.Plotly)]
+    # Extend the color list to match the number of subcategories
+    colors = extend_colors(base_colors, len(objectives_df))
     # Create the figure
     fig = go.Figure(
         data=[
