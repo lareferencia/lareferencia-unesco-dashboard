@@ -15,7 +15,7 @@ def get_ag_grid(data_frame,excluded_columns,get_language):
                 "DetallesComponent" if col == 'Detalles' else None,
                 'maxWidth': 120 if col =='Detalles' else 
                             100 if col == 'WEB' else None,
-                'minWidth': 750 if col == 'Nombre de la iniciativa' else 
+                'minWidth': 650 if col == 'Nombre de la iniciativa' else 
                             125 if col == 'PAIS' else 
                             120 if col == 'Detalles' else None,
                 }
