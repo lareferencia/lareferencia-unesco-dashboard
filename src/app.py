@@ -109,7 +109,8 @@ def update_card_info(selected_cell, is_open):
                     html.A(
                         href=str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'WEB'].values[0]),
                         children=str(data_frame.loc[data_frame['Nombre de la iniciativa'] == cell_value, 'WEB'].values[0]),
-                        target='_blank'
+                        target='_blank',
+                        rel='noopener noreferrer'
                     )
                 ], style={'margin': '10px'}),
                 html.Div([

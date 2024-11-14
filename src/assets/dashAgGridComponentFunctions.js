@@ -18,8 +18,12 @@ dagcomponentfuncs.ContactoButton = function (props) {
       // Attempt to create a URL object
       const url = new URL(props.value);
 
-      // Open the URL in a new tab
-      window.open(url.href, "_blank");
+      // Open the URL in a new tab with rel="noopener noreferrer"
+      const newWindow = window.open(url.href, "_blank");
+      if (newWindow) {
+        newWindow.opener = null;
+        newWindow.rel = "noopener noreferrer";
+      }
     } catch (error) {
       // Log the error and show an alert for an invalid URL
       console.error("Invalid URL:", props.value);
