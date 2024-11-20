@@ -40,7 +40,7 @@ def getSubcategoriesDistributionBarChart(df, lang):
                    x=subcategories_df['count'],
                    hovertext=hovertexts,
                    orientation='h',
-                hovertemplate='%{x}<br>%{hovertext}<extra></extra>',
+                hovertemplate=f'{translate(lang, "Count")}: %{{x}}<br>%{{hovertext}}<extra></extra>',
                    marker=dict(color=colors))
         ],
         layout=dict(
@@ -83,10 +83,10 @@ def getUnescoObjectivesDistributionBarChart(df,lang):
                    x=objectives_df['count'],
                    orientation='h',
                    hovertext=hovertexts,
-                   hovertemplate='%{x}<br>%{hovertext}<extra></extra>',
+                   hovertemplate=f'{translate(lang, "Count")}: %{{x}}<br>%{{hovertext}}<extra></extra>',
                    marker=dict(color=colors),
                    text=objectives_df['subcategory'],
-                   textposition='auto',
+                   textposition='auto',)
         ],
         layout=dict(
             title=translate(lang, 'UNESCO objectives distribution'),
