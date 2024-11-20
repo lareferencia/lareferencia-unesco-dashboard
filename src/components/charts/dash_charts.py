@@ -36,14 +36,17 @@ def getSubcategoriesDistributionBarChart(df, lang):
     # Create the figure
     fig = go.Figure(
         data=[
-            go.Bar(x=x_subcategories,
-                   y=subcategories_df['count'],
+            go.Bar(y=x_subcategories,
+                   x=subcategories_df['count'],
                    hovertext=hovertexts,
-                hovertemplate='%{y}<br>%{hovertext}<extra></extra>',
+                   orientation='h',
+                hovertemplate='%{x}<br>%{hovertext}<extra></extra>',
                    marker=dict(color=colors))
         ],
         layout=dict(
             title=translate(lang, 'Subcategories distribution'),
+            xaxis=dict(title=translate(lang, 'Count')),
+            yaxis=dict(title=translate(lang, 'Subcategory'))
         )
     )
     
@@ -76,14 +79,17 @@ def getUnescoObjectivesDistributionBarChart(df,lang):
     # Create the figure
     fig = go.Figure(
         data=[
-            go.Bar(x=objectives_df['subcategory'],
-                   y=objectives_df['count'],
+            go.Bar(y=objectives_df['subcategory'],
+                   x=objectives_df['count'],
+                   orientation='h',
                    hovertext=hovertexts,
-                   hovertemplate='%{y}<br>%{hovertext}<extra></extra>',
+                   hovertemplate='%{x}<br>%{hovertext}<extra></extra>',
                    marker=dict(color=colors))
         ],
         layout=dict(
             title=translate(lang, 'UNESCO objectives distribution'),
+            xaxis=dict(title=translate(lang, 'Count')),
+            yaxis=dict(title=translate(lang, 'Objective'))
         )
     )
     return dcc.Graph(figure=fig,config={
