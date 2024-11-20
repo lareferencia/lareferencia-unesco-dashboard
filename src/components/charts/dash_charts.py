@@ -30,7 +30,7 @@ def getSubcategoriesDistributionBarChart(df, lang):
     # Save the full subcategory texts for hovertext, truncated to a maximum length
     hovertexts = subcategories_df['subcategory'].apply(lambda x: (x[:75] + '...') if len(x) > 75 else x)
     # X axis text, truncated to a maximum length
-    x_subcategories = subcategories_df['subcategory'].apply(lambda x: (x[:15] + '...') if len(x) > 15 else x)
+    x_subcategories = subcategories_df['subcategory'].apply(lambda x: (x[:25] + '...') if len(x) > 25 else x)
     # Extend the color list to match the number of subcategories
     colors = extend_colors(base_colors, len(subcategories_df))
     # Create the figure
@@ -72,19 +72,21 @@ def getUnescoObjectivesDistributionBarChart(df,lang):
     objectives_df = get_unesco_objectives_and_count(df,lang)
     # Save the full subcategory texts for hovertext, truncated to a maximum length
     hovertexts = objectives_df['subcategory'].apply(lambda x: (x[:75] + '...') if len(x) > 75 else x)
-    # Modify 'subcategory' to only contain the first three characters
-    objectives_df['subcategory'] = objectives_df['subcategory'].str[:3]
+    # Modify 'subcategory' truncating the text to a maximum length
+    objectives_df['subcategory'] = objectives_df['subcategory'].apply(lambda x: (x[:75] + '...') if len(x) > 75 else x)
     # Extend the color list to match the number of subcategories
     colors = extend_colors(base_colors, len(objectives_df))
     # Create the figure
     fig = go.Figure(
         data=[
-            go.Bar(y=objectives_df['subcategory'],
+            go.Bar(y=objectives_df['subcategory'].str[:3],
                    x=objectives_df['count'],
                    orientation='h',
                    hovertext=hovertexts,
                    hovertemplate='%{x}<br>%{hovertext}<extra></extra>',
-                   marker=dict(color=colors))
+                   marker=dict(color=colors),
+                   text=objectives_df['subcategory'],
+                   textposition='auto',
         ],
         layout=dict(
             title=translate(lang, 'UNESCO objectives distribution'),
