@@ -1,5 +1,5 @@
 from dash import html
-from components.charts.dash_charts import *
+from components.charts.dash_charts import getSubcategoriesDistributionBarChart, getUnescoObjectivesDistributionBarChart
 
 def get_chart_div(chart_id, chart_content):
     return html.Div(
@@ -13,8 +13,7 @@ def get_chart_container(data_frame,lang):
         id='chart-container',
         style={'background-color': '#CFD8DC', 'display': 'flex', 'height': 'fit-content', 'flex-direction': 'row'},
         children=[
-            get_chart_div('chart2', getCountryDistributionPieChart(data_frame,lang)),
-            get_chart_div('chart1', getSubcategoriesDistributionBarChart(data_frame,lang)),
-            get_chart_div('chart3', getUnescoObjectivesDistributionBarChart(data_frame,lang)),
+            get_chart_div('subcategoriesChart', getSubcategoriesDistributionBarChart(data_frame,lang)),
+            get_chart_div('unescoChart', getUnescoObjectivesDistributionBarChart(data_frame,lang)),
         ]
     )

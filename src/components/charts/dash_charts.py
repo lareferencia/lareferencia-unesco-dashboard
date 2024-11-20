@@ -21,13 +21,6 @@ base_colors = [
 def extend_colors(base_colors, length):
     return base_colors * (length // len(base_colors)) + base_colors[:length % len(base_colors)]
 
-# Country distribution chart
-def getCountryDistributionPieChart(df, lang):
-    colors = extend_colors(base_colors, len(df))
-    fig = px.pie(df, names='PAIS', title=translate(lang, 'Country distribution'), color_discrete_sequence=colors)
-    graph = dcc.Graph(figure=fig, config={'displaylogo': False})
-    return graph
-
 #Subcategories distribution chart
 def getSubcategoriesDistributionBarChart(df, lang):
     # Get subcategories dictionary
