@@ -36,17 +36,23 @@ def getSubcategoriesDistributionBarChart(df, lang):
     # Create the figure
     fig = go.Figure(
         data=[
-            go.Bar(y=x_subcategories,
+            go.Bar(y=x_subcategories.index,
                    x=subcategories_df['count'],
                    hovertext=hovertexts,
                    orientation='h',
                 hovertemplate=f'{translate(lang, "Count")}: %{{x}}<br>%{{hovertext}}<extra></extra>',
-                   marker=dict(color=colors))
+                   marker=dict(color=colors),
+                   text=subcategories_df['subcategory'],
+                   textposition='auto',)
         ],
         layout=dict(
             title=translate(lang, 'Subcategories distribution'),
             xaxis=dict(title=translate(lang, 'Count')),
-            yaxis=dict(title=translate(lang, 'Subcategory'))
+            yaxis=dict(
+                title=translate(lang, 'Subcategory'),
+                tickvals=subcategories_df.index,
+                ticktext=[''] * len(subcategories_df)  # Hide y-axis labels
+            )
         )
     )
     
